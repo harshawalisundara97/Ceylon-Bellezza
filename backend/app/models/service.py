@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 
 from sqlalchemy import ForeignKey, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -15,5 +16,5 @@ class Service(Base):
     name: Mapped[str] = mapped_column(String(150))
     description: Mapped[str] = mapped_column(String(1000), default="")
     category: Mapped[str] = mapped_column(String(100))
-    price: Mapped[float] = mapped_column(Numeric(10, 2))
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     duration_minutes: Mapped[int]
