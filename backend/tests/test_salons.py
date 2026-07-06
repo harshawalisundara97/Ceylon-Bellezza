@@ -47,6 +47,26 @@ def test_create_salon_requires_platform_admin(client, db_session):
     assert response.status_code == 401
 
 
+def test_create_salon_rejects_salon_admin_token(client, db_session):
+    token = create_access_token(
+        {"sub": "some-admin-id", "role": "salon_admin", "salon_id": "some-salon-id"}
+    )
+    response = client.post(
+        "/admin/salons",
+        json={
+            "slug": "glamour-lk",
+            "name": "Glamour Salon",
+            "category": "unisex",
+            "address": "123 Galle Rd",
+            "city": "Colombo",
+            "admin_email": "owner@glamour.lk",
+            "admin_password": "secret123",
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 401
+
+
 def test_list_salons(client, db_session):
     token = _platform_token()
     with patch("app.routers.salons.geocode_address", return_value=(6.9, 79.8)):
