@@ -1,5 +1,5 @@
 from app.auth.security import create_access_token
-from app.models import GalleryItem, Salon, Service, Staff
+from app.models import ContentBlock, GalleryItem, Salon, Service, Staff
 
 
 def _two_salons_with_tokens(db_session):
@@ -53,3 +53,30 @@ def test_salon_a_cannot_see_salon_b_gallery(client, db_session):
 
     response = client.get("/dashboard/gallery", headers={"Authorization": f"Bearer {token_a}"})
     assert response.json() == []
+
+
+def test_salon_a_cannot_see_salon_b_content_blocks(client, db_session):
+    salon_a, salon_b, token_a, token_b = _two_salons_with_tokens(db_session)
+    db_session.add(ContentBlock(salon_id=salon_b.id, key="about_us", value="Salon B's private about text"))
+    db_session.commit()
+
+    response = client.get("/dashboard/content", headers={"Authorization": f"Bearer {token_a}"})
+    assert response.json() == []
+
+
+def test_salon_a_upsert_does_not_overwrite_salon_b_content_block(client, db_session):
+    salon_a, salon_b, token_a, token_b = _two_salons_with_tokens(db_session)
+    block_b = ContentBlock(salon_id=salon_b.id, key="about_us", value="Salon B's private about text")
+    db_session.add(block_b)
+    db_session.commit()
+
+    response = client.put(
+        "/dashboard/content/about_us",
+        json={"value": "Salon A's about text"},
+        headers={"Authorization": f"Bearer {token_a}"},
+    )
+    assert response.status_code == 200
+    assert response.json()["salon_id"] == str(salon_a.id)
+
+    db_session.refresh(block_b)
+    assert block_b.value == "Salon B's private about text"
