@@ -1,6 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_platform_admin
@@ -31,12 +32,27 @@ def create_salon(payload: SalonCreateRequest, db: Session = Depends(get_db)):
         longitude=longitude,
     )
     db.add(salon)
-    db.commit()
-    db.refresh(salon)
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A salon with this slug or an admin with this email already exists",
+        )
 
     admin = SalonAdmin(salon_id=salon.id, email=payload.admin_email, password_hash=hash_password(payload.admin_password))
     db.add(admin)
-    db.commit()
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A salon with this slug or an admin with this email already exists",
+        )
+    db.refresh(salon)
 
     return salon
 
