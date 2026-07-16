@@ -19,19 +19,19 @@ export default function SalonDirectory({ initialSalons }: { initialSalons: Salon
 
   return (
     <div>
-      <div className="flex justify-center py-8">
+      <div className="relative z-10 mt-4 flex justify-center px-6 sm:-mt-8">
         <SearchBar value={query} onChange={setQuery} />
       </div>
       {filtered.length === 0 ? (
-        <p className="py-16 text-center text-gray-500">
+        <p className="py-16 text-center text-taupe">
           {initialSalons.length === 0 ? "No salons yet — check back soon." : "No salons match your search."}
         </p>
       ) : (
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
-          className="grid grid-cols-1 gap-6 px-6 pb-16 sm:grid-cols-2 lg:grid-cols-3"
+          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+          className="grid grid-cols-1 gap-6 px-6 pb-16 pt-10 sm:grid-cols-2 lg:grid-cols-3"
         >
           {filtered.map((salon) => (
             <motion.div key={salon.id} variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
