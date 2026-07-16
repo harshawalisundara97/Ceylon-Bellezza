@@ -5,10 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          DEFAULT: "#B8860B",
-          dark: "#8B6508",
+        ivory: "#faf6f0",
+        ink: "#2b241d",
+        taupe: "#8a7c6c",
+        terracotta: {
+          DEFAULT: "#a6784f",
+          light: "#e8c9a0",
         },
+        hairline: "#e8ddd0",
+      },
+      fontFamily: {
+        serif: ["var(--font-playfair)", "Georgia", "serif"],
       },
     },
   },
