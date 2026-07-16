@@ -2,15 +2,17 @@ import { GalleryItem } from "@/lib/types";
 
 export default function GalleryGrid({ items }: { items: GalleryItem[] }) {
   return (
-    <section className="px-6 py-10">
-      <h2 className="text-2xl font-semibold">Gallery</h2>
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {items.map((item) => (
+    <section className="bg-white px-6 py-12">
+      <h2 className="font-serif text-2xl text-ink">Gallery</h2>
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {items.map((item, index) => (
           <img
             key={item.id}
             src={item.image_url}
             alt={item.caption || "Gallery photo"}
-            className="aspect-square w-full rounded-lg object-cover"
+            className={`w-full rounded-lg border border-hairline object-cover ${
+              index % 3 === 0 ? "aspect-[3/4]" : "aspect-square"
+            }`}
           />
         ))}
       </div>
