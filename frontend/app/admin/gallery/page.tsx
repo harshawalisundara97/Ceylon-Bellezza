@@ -16,6 +16,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   async function loadItems() {
     setLoading(true);
@@ -52,6 +53,8 @@ export default function GalleryPage() {
       await loadItems();
     } catch (err) {
       setError(err instanceof AdminApiError ? err.message : "Failed to delete photo");
+    } finally {
+      setConfirmingId(null);
     }
   }
 
@@ -84,6 +87,8 @@ export default function GalleryPage() {
 
       {loading ? (
         <p className="mt-6 text-taupe">Loading...</p>
+      ) : items.length === 0 ? (
+        <p className="mt-6 text-taupe">No photos yet — add your first one above.</p>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
@@ -91,9 +96,21 @@ export default function GalleryPage() {
               <img src={item.image_url} alt={item.caption || "Gallery photo"} className="aspect-square w-full object-cover" />
               <div className="p-3">
                 <p className="text-sm text-taupe">{item.caption}</p>
-                <button onClick={() => handleDelete(item.id)} className="mt-2 text-sm text-red-600">
-                  Delete
-                </button>
+                {confirmingId === item.id ? (
+                  <div className="mt-2 flex items-center gap-3">
+                    <span className="text-sm text-ink">Delete?</span>
+                    <button onClick={() => handleDelete(item.id)} className="text-sm text-red-600">
+                      Confirm
+                    </button>
+                    <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={() => setConfirmingId(item.id)} className="mt-2 text-sm text-red-600">
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}

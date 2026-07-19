@@ -20,6 +20,7 @@ export default function ServicesPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   async function loadServices() {
     setLoading(true);
@@ -56,6 +57,10 @@ export default function ServicesPage() {
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    if (Number.isNaN(Number(form.price)) || Number.isNaN(Number(form.duration_minutes))) {
+      setError("Price and duration must be numbers");
+      return;
+    }
     const payload = {
       name: form.name,
       description: form.description,
@@ -89,6 +94,8 @@ export default function ServicesPage() {
       await loadServices();
     } catch (err) {
       setError(err instanceof AdminApiError ? err.message : "Failed to delete service");
+    } finally {
+      setConfirmingId(null);
     }
   }
 
@@ -119,6 +126,7 @@ export default function ServicesPage() {
             type="number"
             step="0.01"
             placeholder="Price"
+            min="0"
             value={form.price}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
             className="rounded border border-hairline px-3 py-2"
@@ -127,6 +135,7 @@ export default function ServicesPage() {
             required
             type="number"
             placeholder="Duration (minutes)"
+            min="0"
             value={form.duration_minutes}
             onChange={(e) => setForm({ ...form, duration_minutes: e.target.value })}
             className="rounded border border-hairline px-3 py-2"
@@ -152,6 +161,8 @@ export default function ServicesPage() {
 
       {loading ? (
         <p className="mt-6 text-taupe">Loading...</p>
+      ) : services.length === 0 ? (
+        <p className="mt-6 text-taupe">No services yet — add your first one above.</p>
       ) : (
         <table className="mt-6 w-full border-collapse text-left">
           <thead>
@@ -171,12 +182,26 @@ export default function ServicesPage() {
                 <td className="py-3 text-ink">Rs. {service.price.toLocaleString()}</td>
                 <td className="py-3 text-taupe">{service.duration_minutes} min</td>
                 <td className="py-3 text-right">
-                  <button onClick={() => startEdit(service)} className="mr-3 text-sm text-terracotta">
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(service.id)} className="text-sm text-red-600">
-                    Delete
-                  </button>
+                  {confirmingId === service.id ? (
+                    <>
+                      <span className="mr-3 text-sm text-ink">Delete?</span>
+                      <button onClick={() => handleDelete(service.id)} className="mr-3 text-sm text-red-600">
+                        Confirm
+                      </button>
+                      <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => startEdit(service)} className="mr-3 text-sm text-terracotta">
+                        Edit
+                      </button>
+                      <button onClick={() => setConfirmingId(service.id)} className="text-sm text-red-600">
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

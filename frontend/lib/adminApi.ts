@@ -23,12 +23,23 @@ export async function adminFetch<T>(path: string, options: RequestInit = {}): Pr
 
   if (response.status === 401) {
     clearToken();
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/login";
+    }
     throw new AdminApiError(401, "Not authenticated");
   }
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({ detail: response.statusText }));
-    throw new AdminApiError(response.status, body.detail ?? "Request failed");
+    let message: string;
+    if (Array.isArray(body.detail)) {
+      message = body.detail.map((entry: any) => (entry && entry.msg) ? entry.msg : String(entry)).join("; ");
+    } else if (typeof body.detail === "string") {
+      message = body.detail;
+    } else {
+      message = "Request failed";
+    }
+    throw new AdminApiError(response.status, message);
   }
 
   if (response.status === 204) {

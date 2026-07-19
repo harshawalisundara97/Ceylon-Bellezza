@@ -75,7 +75,10 @@ export default function ContentPage() {
             id={field.key}
             rows={4}
             value={values[field.key]}
-            onChange={(e) => setValues({ ...values, [field.key]: e.target.value })}
+            onChange={(e) => {
+              setValues({ ...values, [field.key]: e.target.value });
+              setSavedKey(null);
+            }}
             className="mt-2 w-full rounded border border-hairline px-3 py-2"
           />
           <div className="mt-3 flex items-center gap-3">

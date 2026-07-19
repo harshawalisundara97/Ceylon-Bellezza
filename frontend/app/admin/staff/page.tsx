@@ -18,6 +18,7 @@ export default function StaffPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   async function loadStaff() {
     setLoading(true);
@@ -69,6 +70,8 @@ export default function StaffPage() {
       await loadStaff();
     } catch (err) {
       setError(err instanceof AdminApiError ? err.message : "Failed to delete staff member");
+    } finally {
+      setConfirmingId(null);
     }
   }
 
@@ -114,6 +117,8 @@ export default function StaffPage() {
 
       {loading ? (
         <p className="mt-6 text-taupe">Loading...</p>
+      ) : staff.length === 0 ? (
+        <p className="mt-6 text-taupe">No staff yet — add your first team member above.</p>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {staff.map((member) => (
@@ -126,12 +131,26 @@ export default function StaffPage() {
               <p className="mt-3 font-medium text-ink">{member.name}</p>
               <p className="mt-1 text-sm text-taupe">{member.bio}</p>
               <div className="mt-3 flex justify-center gap-3">
-                <button onClick={() => startEdit(member)} className="text-sm text-terracotta">
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(member.id)} className="text-sm text-red-600">
-                  Delete
-                </button>
+                {confirmingId === member.id ? (
+                  <>
+                    <span className="text-sm text-ink">Delete?</span>
+                    <button onClick={() => handleDelete(member.id)} className="text-sm text-red-600">
+                      Confirm
+                    </button>
+                    <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => startEdit(member)} className="text-sm text-terracotta">
+                      Edit
+                    </button>
+                    <button onClick={() => setConfirmingId(member.id)} className="text-sm text-red-600">
+                      Delete
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
