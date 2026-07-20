@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-ivory">
       <aside className="w-56 shrink-0 border-r border-hairline bg-white p-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-terracotta">Salon Admin</p>
+        <p className="font-serif text-sm uppercase tracking-wide text-terracotta">Salon Admin</p>
         <nav className="mt-6 flex flex-col gap-2">
           {NAV_LINKS.map((link) => (
             <Link

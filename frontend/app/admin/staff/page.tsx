@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { adminFetch, AdminApiError } from "@/lib/adminApi";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+import PageHeading from "@/components/ui/PageHeading";
 
 interface Staff {
   id: string;
@@ -77,43 +82,39 @@ export default function StaffPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-ink">Staff</h1>
+      <PageHeading>Staff</PageHeading>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-hairline bg-white p-5">
+      <Card as="form" onSubmit={handleSubmit} className="mt-6">
         <p className="font-medium text-ink">{editingId ? "Edit staff member" : "Add staff member"}</p>
         <div className="mt-4 grid grid-cols-2 gap-4">
-          <input
+          <Input
             required
             placeholder="Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="rounded border border-hairline px-3 py-2"
           />
-          <input
+          <Input
             placeholder="Photo URL"
             value={form.photo_url}
             onChange={(e) => setForm({ ...form, photo_url: e.target.value })}
-            className="rounded border border-hairline px-3 py-2"
           />
-          <textarea
+          <Textarea
             placeholder="Bio"
             value={form.bio}
             onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            className="col-span-2 rounded border border-hairline px-3 py-2"
+            className="col-span-2"
           />
         </div>
         <div className="mt-4 flex gap-3">
-          <button type="submit" className="rounded bg-terracotta px-4 py-2 text-white">
-            {editingId ? "Save changes" : "Add staff member"}
-          </button>
+          <Button type="submit">{editingId ? "Save changes" : "Add staff member"}</Button>
           {editingId && (
-            <button type="button" onClick={cancelEdit} className="rounded border border-hairline px-4 py-2 text-ink">
+            <Button type="button" variant="secondary" onClick={cancelEdit}>
               Cancel
-            </button>
+            </Button>
           )}
         </div>
-      </form>
+      </Card>
 
       {loading ? (
         <p className="mt-6 text-taupe">Loading...</p>
@@ -122,7 +123,7 @@ export default function StaffPage() {
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {staff.map((member) => (
-            <div key={member.id} className="rounded-lg border border-hairline bg-white p-4 text-center">
+            <Card key={member.id} className="p-4 text-center">
               <img
                 src={member.photo_url ?? "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"}
                 alt={member.name}
@@ -134,9 +135,9 @@ export default function StaffPage() {
                 {confirmingId === member.id ? (
                   <>
                     <span className="text-sm text-ink">Delete?</span>
-                    <button onClick={() => handleDelete(member.id)} className="text-sm text-red-600">
+                    <Button variant="danger" onClick={() => handleDelete(member.id)}>
                       Confirm
-                    </button>
+                    </Button>
                     <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
                       Cancel
                     </button>
@@ -146,13 +147,13 @@ export default function StaffPage() {
                     <button onClick={() => startEdit(member)} className="text-sm text-terracotta">
                       Edit
                     </button>
-                    <button onClick={() => setConfirmingId(member.id)} className="text-sm text-red-600">
+                    <Button variant="danger" onClick={() => setConfirmingId(member.id)}>
                       Delete
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
