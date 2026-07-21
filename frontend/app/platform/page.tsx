@@ -37,7 +37,7 @@ export default function PlatformSalonsPage() {
   const [salons, setSalons] = useState<Salon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -84,6 +84,33 @@ export default function PlatformSalonsPage() {
       setError(err instanceof PlatformApiError ? err.message : "Failed to create salon");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleStatusChange(salon: Salon, status: string) {
+    setError(null);
+    try {
+      const updated = await platformFetch<Salon>(`/admin/salons/${salon.id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      });
+      setSalons(salons.map((s) => (s.id === updated.id ? updated : s)));
+    } catch (err) {
+      setError(err instanceof PlatformApiError ? err.message : "Failed to update status");
+    }
+  }
+
+  async function handleModuleToggle(salon: Salon, moduleKey: "gallery" | "booking" | "contact_form") {
+    setError(null);
+    const nextModules = { ...salon.enabled_modules, [moduleKey]: !salon.enabled_modules[moduleKey] };
+    try {
+      const updated = await platformFetch<Salon>(`/admin/salons/${salon.id}/modules`, {
+        method: "PATCH",
+        body: JSON.stringify(nextModules),
+      });
+      setSalons(salons.map((s) => (s.id === updated.id ? updated : s)));
+    } catch (err) {
+      setError(err instanceof PlatformApiError ? err.message : "Failed to update modules");
     }
   }
 
@@ -178,30 +205,61 @@ export default function PlatformSalonsPage() {
           </thead>
           <tbody className="divide-y divide-hairline">
             {salons.map((salon) => (
-              <tr key={salon.id}>
-                <td className="py-3 text-ink">{salon.name}</td>
-                <td className="py-3 text-taupe">{salon.slug}</td>
-                <td className="py-3 text-taupe">{salon.city}</td>
-                <td className="py-3 text-taupe">{salon.category}</td>
-                <td className="py-3">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ${
-                      salon.status === "active" ? "bg-terracotta/10 text-terracotta" : "bg-hairline text-taupe"
-                    }`}
-                  >
-                    {salon.status}
-                  </span>
-                </td>
-                <td className="py-3 text-sm text-taupe">
-                  {[
-                    salon.enabled_modules.gallery && "gallery",
-                    salon.enabled_modules.booking && "booking",
-                    salon.enabled_modules.contact_form && "contact",
-                  ]
-                    .filter(Boolean)
-                    .join(", ") || "none"}
-                </td>
-              </tr>
+              <>
+                <tr key={salon.id} onClick={() => setExpandedId(expandedId === salon.id ? null : salon.id)} className="cursor-pointer hover:bg-ivory">
+                  <td className="py-3 text-ink">{salon.name}</td>
+                  <td className="py-3 text-taupe">{salon.slug}</td>
+                  <td className="py-3 text-taupe">{salon.city}</td>
+                  <td className="py-3 text-taupe">{salon.category}</td>
+                  <td className="py-3">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ${
+                        salon.status === "active" ? "bg-terracotta/10 text-terracotta" : "bg-hairline text-taupe"
+                      }`}
+                    >
+                      {salon.status}
+                    </span>
+                  </td>
+                  <td className="py-3 text-sm text-taupe">
+                    {[
+                      salon.enabled_modules.gallery && "gallery",
+                      salon.enabled_modules.booking && "booking",
+                      salon.enabled_modules.contact_form && "contact",
+                    ]
+                      .filter(Boolean)
+                      .join(", ") || "none"}
+                  </td>
+                </tr>
+                {expandedId === salon.id && (
+                  <tr key={`${salon.id}-panel`}>
+                    <td colSpan={6} className="bg-ivory px-4 py-4">
+                      <div className="flex flex-wrap items-center gap-6">
+                        <label className="text-sm text-ink">
+                          Status:
+                          <select
+                            value={salon.status}
+                            onChange={(e) => handleStatusChange(salon, e.target.value)}
+                            className="ml-2 rounded border border-hairline px-2 py-1"
+                          >
+                            <option value="active">active</option>
+                            <option value="suspended">suspended</option>
+                          </select>
+                        </label>
+                        {(["gallery", "booking", "contact_form"] as const).map((moduleKey) => (
+                          <label key={moduleKey} className="flex items-center gap-2 text-sm text-ink">
+                            <input
+                              type="checkbox"
+                              checked={salon.enabled_modules[moduleKey]}
+                              onChange={() => handleModuleToggle(salon, moduleKey)}
+                            />
+                            {moduleKey}
+                          </label>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
             ))}
           </tbody>
         </table>
