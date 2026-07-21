@@ -13,7 +13,7 @@ export default function AdminHomePage() {
   return (
     <div>
       <PageHeading>Welcome back</PageHeading>
-      <p className="mt-1 text-taupe">Manage your salon's public listing from here.</p>
+      <p className="mt-1 text-taupe">Manage your salon&apos;s public listing from here.</p>
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {SECTIONS.map((section) => (
           <Card as={Link} key={section.href} href={section.href} className="block hover:border-terracotta">
