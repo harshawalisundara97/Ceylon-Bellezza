@@ -78,7 +78,7 @@ export default function PlatformSalonsPage() {
         method: "POST",
         body: JSON.stringify(payload),
       });
-      setSalons([created, ...salons]);
+      setSalons((prev) => [created, ...prev]);
       setForm(EMPTY_FORM);
     } catch (err) {
       setError(err instanceof PlatformApiError ? err.message : "Failed to create salon");
@@ -94,7 +94,7 @@ export default function PlatformSalonsPage() {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
-      setSalons(salons.map((s) => (s.id === updated.id ? updated : s)));
+      setSalons((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
     } catch (err) {
       setError(err instanceof PlatformApiError ? err.message : "Failed to update status");
     }
@@ -108,7 +108,7 @@ export default function PlatformSalonsPage() {
         method: "PATCH",
         body: JSON.stringify(nextModules),
       });
-      setSalons(salons.map((s) => (s.id === updated.id ? updated : s)));
+      setSalons((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
     } catch (err) {
       setError(err instanceof PlatformApiError ? err.message : "Failed to update modules");
     }
