@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginSalonAdmin, AdminApiError } from "@/lib/adminApi";
 import { saveToken } from "@/lib/adminAuth";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import PageHeading from "@/components/ui/PageHeading";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -29,37 +33,33 @@ export default function AdminLoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-ivory px-6">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-lg border border-hairline bg-white p-8">
-        <h1 className="text-xl font-semibold text-ink">Salon Admin Login</h1>
+      <Card as="form" className="w-full max-w-sm p-8" onSubmit={handleSubmit}>
+        <PageHeading className="text-xl">Salon Admin Login</PageHeading>
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
         <label className="mt-6 block text-sm text-taupe">
           Email
-          <input
+          <Input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded border border-hairline px-3 py-2 text-ink focus:border-terracotta focus:outline-none"
+            className="mt-1 w-full"
           />
         </label>
         <label className="mt-4 block text-sm text-taupe">
           Password
-          <input
+          <Input
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded border border-hairline px-3 py-2 text-ink focus:border-terracotta focus:outline-none"
+            className="mt-1 w-full"
           />
         </label>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-6 w-full rounded bg-terracotta py-2 text-white disabled:opacity-50"
-        >
+        <Button type="submit" disabled={submitting} className="mt-6 w-full">
           {submitting ? "Logging in..." : "Log In"}
-        </button>
-      </form>
+        </Button>
+      </Card>
     </main>
   );
 }

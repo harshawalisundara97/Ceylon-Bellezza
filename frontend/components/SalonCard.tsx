@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SalonSummary } from "@/lib/types";
+import Card from "@/components/ui/Card";
 
 const DEFAULT_COVER_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80";
 
@@ -11,10 +12,12 @@ function coverImage(salon: SalonSummary): string {
 
 export default function SalonCard({ salon }: { salon: SalonSummary }) {
   return (
-    <motion.div
+    <Card
+      as={motion.div}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="group overflow-hidden rounded-lg border border-hairline bg-white transition-shadow duration-300 hover:shadow-xl"
+      padding={false}
+      className="group overflow-hidden transition-shadow duration-300 hover:shadow-xl"
     >
       <Link href={`/salons/${salon.slug}`}>
         <div className="h-48 w-full overflow-hidden">
@@ -32,6 +35,6 @@ export default function SalonCard({ salon }: { salon: SalonSummary }) {
           <p className="text-sm text-taupe">{salon.city}</p>
         </div>
       </Link>
-    </motion.div>
+    </Card>
   );
 }

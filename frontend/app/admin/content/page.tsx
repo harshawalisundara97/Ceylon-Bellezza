@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { adminFetch, AdminApiError } from "@/lib/adminApi";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import Textarea from "@/components/ui/Textarea";
+import PageHeading from "@/components/ui/PageHeading";
 
 interface ContentBlock {
   id: string;
@@ -63,15 +67,15 @@ export default function ContentPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-ink">Content</h1>
+      <PageHeading>Content</PageHeading>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
       {FIELDS.map((field) => (
-        <div key={field.key} className="mt-6 rounded-lg border border-hairline bg-white p-5">
+        <Card key={field.key} className="mt-6">
           <label className="block font-medium text-ink" htmlFor={field.key}>
             {field.label}
           </label>
-          <textarea
+          <Textarea
             id={field.key}
             rows={4}
             value={values[field.key]}
@@ -79,19 +83,15 @@ export default function ContentPage() {
               setValues({ ...values, [field.key]: e.target.value });
               setSavedKey(null);
             }}
-            className="mt-2 w-full rounded border border-hairline px-3 py-2"
+            className="mt-2 w-full"
           />
           <div className="mt-3 flex items-center gap-3">
-            <button
-              onClick={() => handleSave(field.key)}
-              disabled={savingKey === field.key}
-              className="rounded bg-terracotta px-4 py-2 text-white disabled:opacity-50"
-            >
+            <Button onClick={() => handleSave(field.key)} disabled={savingKey === field.key}>
               {savingKey === field.key ? "Saving..." : "Save"}
-            </button>
+            </Button>
             {savedKey === field.key && <span className="text-sm text-taupe">Saved</span>}
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   );

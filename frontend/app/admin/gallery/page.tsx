@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { adminFetch, AdminApiError } from "@/lib/adminApi";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import PageHeading from "@/components/ui/PageHeading";
 
 interface GalleryItem {
   id: string;
@@ -60,30 +64,28 @@ export default function GalleryPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-ink">Gallery</h1>
+      <PageHeading>Gallery</PageHeading>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-hairline bg-white p-5">
+      <Card as="form" onSubmit={handleSubmit} className="mt-6">
         <p className="font-medium text-ink">Add photo</p>
         <div className="mt-4 grid grid-cols-2 gap-4">
-          <input
+          <Input
             required
             placeholder="Image URL"
             value={form.image_url}
             onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-            className="rounded border border-hairline px-3 py-2"
           />
-          <input
+          <Input
             placeholder="Caption"
             value={form.caption}
             onChange={(e) => setForm({ ...form, caption: e.target.value })}
-            className="rounded border border-hairline px-3 py-2"
           />
         </div>
-        <button type="submit" className="mt-4 rounded bg-terracotta px-4 py-2 text-white">
+        <Button type="submit" className="mt-4">
           Add photo
-        </button>
-      </form>
+        </Button>
+      </Card>
 
       {loading ? (
         <p className="mt-6 text-taupe">Loading...</p>
@@ -92,27 +94,27 @@ export default function GalleryPage() {
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
-            <div key={item.id} className="overflow-hidden rounded-lg border border-hairline bg-white">
+            <Card key={item.id} padding={false} className="overflow-hidden">
               <img src={item.image_url} alt={item.caption || "Gallery photo"} className="aspect-square w-full object-cover" />
               <div className="p-3">
                 <p className="text-sm text-taupe">{item.caption}</p>
                 {confirmingId === item.id ? (
                   <div className="mt-2 flex items-center gap-3">
                     <span className="text-sm text-ink">Delete?</span>
-                    <button onClick={() => handleDelete(item.id)} className="text-sm text-red-600">
+                    <Button variant="danger" onClick={() => handleDelete(item.id)}>
                       Confirm
-                    </button>
+                    </Button>
                     <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
                       Cancel
                     </button>
                   </div>
                 ) : (
-                  <button onClick={() => setConfirmingId(item.id)} className="mt-2 text-sm text-red-600">
+                  <Button variant="danger" onClick={() => setConfirmingId(item.id)} className="mt-2">
                     Delete
-                  </button>
+                  </Button>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
