@@ -42,3 +42,26 @@ export interface SalonDetail {
   gallery: GalleryItem[];
   content: Record<string, string>;
 }
+
+export interface BookingCreatePayload {
+  service_id: string;
+  staff_id?: string | null;
+  scheduled_at: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  gender: "male" | "female" | "other";
+}
+
+export interface Booking {
+  id: string;
+  salon_id: string;
+  service_id: string;
+  staff_id: string | null;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  gender: string;
+  scheduled_at: string;
+  status: string;
+}

@@ -20,13 +20,12 @@ export default function SalonHero({ salon }: { salon: SalonDetail }) {
       </span>
       <h1 className="mt-3 font-serif text-4xl text-white sm:text-5xl">{salon.name}</h1>
       <p className="mt-1 text-white/80">{salon.city}</p>
-      <button
-        disabled
-        title="Coming soon"
-        className="mt-6 cursor-not-allowed rounded-full border border-white/60 px-6 py-3 text-sm font-medium text-white/70"
+      <a
+        href="#book"
+        className="mt-6 rounded-full border border-white/60 px-6 py-3 text-sm font-medium text-white/70 hover:text-white"
       >
         Book Appointment
-      </button>
+      </a>
     </section>
   );
 }
