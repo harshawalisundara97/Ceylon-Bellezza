@@ -67,6 +67,7 @@ def test_booking_unique_constraint_prevents_double_booking(db_session):
         customer_name="Alice",
         customer_phone="0771234567",
         customer_email="alice@example.com",
+        gender="female",
         scheduled_at=scheduled_at,
     )
     db_session.add(booking_one)
@@ -79,6 +80,7 @@ def test_booking_unique_constraint_prevents_double_booking(db_session):
         customer_name="Bob",
         customer_phone="0777654321",
         customer_email="bob@example.com",
+        gender="male",
         scheduled_at=scheduled_at,
     )
     db_session.add(booking_two)

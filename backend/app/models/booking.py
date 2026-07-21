@@ -19,5 +19,6 @@ class Booking(Base):
     customer_name: Mapped[str] = mapped_column(String(150))
     customer_phone: Mapped[str] = mapped_column(String(30))
     customer_email: Mapped[str] = mapped_column(String(255))
+    gender: Mapped[str] = mapped_column(String(20))
     scheduled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(String(20), default="pending")
