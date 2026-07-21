@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { platformFetch, PlatformApiError } from "@/lib/platformApi";
 import PageHeading from "@/components/ui/PageHeading";
 import Button from "@/components/ui/Button";
@@ -205,7 +205,7 @@ export default function PlatformSalonsPage() {
           </thead>
           <tbody className="divide-y divide-hairline">
             {salons.map((salon) => (
-              <>
+              <React.Fragment key={salon.id}>
                 <tr key={salon.id} onClick={() => setExpandedId(expandedId === salon.id ? null : salon.id)} className="cursor-pointer hover:bg-ivory">
                   <td className="py-3 text-ink">{salon.name}</td>
                   <td className="py-3 text-taupe">{salon.slug}</td>
@@ -259,7 +259,7 @@ export default function PlatformSalonsPage() {
                     </td>
                   </tr>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
