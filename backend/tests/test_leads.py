@@ -70,6 +70,19 @@ def test_reject_already_processed_lead_returns_409(client, db_session):
     assert second.status_code == 409
 
 
+def test_update_status_rejects_non_rejected_value(client, db_session):
+    lead = _create_lead(db_session)
+    token = _platform_token()
+    response = client.patch(
+        f"/admin/leads/{lead.id}/status",
+        json={"status": "approved"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 400
+    db_session.refresh(lead)
+    assert lead.status == "pending"
+
+
 def test_approve_lead_creates_salon_and_admin(client, db_session):
     lead = _create_lead(db_session)
     token = _platform_token()

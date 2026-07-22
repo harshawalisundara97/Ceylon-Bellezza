@@ -40,6 +40,11 @@ def update_lead_status(lead_id: uuid.UUID, payload: LeadRejectRequest, db: Sessi
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lead not found")
     if lead.status != "pending":
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Lead has already been processed")
+    if payload.status != "rejected":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This endpoint only accepts status 'rejected'; use the approve endpoint to approve a lead",
+        )
     lead.status = payload.status
     db.commit()
     db.refresh(lead)
