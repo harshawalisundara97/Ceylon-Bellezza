@@ -1,4 +1,4 @@
-import { Booking, BookingCreatePayload, SalonDetail, SalonSummary } from "./types";
+import { Booking, BookingCreatePayload, LeadCreatePayload, SalonDetail, SalonSummary } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -32,4 +32,16 @@ export async function createBooking(slug: string, payload: BookingCreatePayload)
     throw new Error(body?.detail ?? `Booking failed: ${response.status}`);
   }
   return response.json();
+}
+
+export async function createLead(payload: LeadCreatePayload): Promise<void> {
+  const response = await fetch(`${API_URL}/leads`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.detail ?? `Submission failed: ${response.status}`);
+  }
 }

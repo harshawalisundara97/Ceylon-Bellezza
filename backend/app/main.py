@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, bookings_dashboard, content, gallery, public, salons, services, staff
+from app.routers import auth, bookings_dashboard, content, gallery, leads, public, salons, services, staff
 
 app = FastAPI(title="Ceylon Bellezza API")
 
@@ -11,6 +11,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(leads.router)
 app.include_router(auth.router)
 app.include_router(salons.router)
 app.include_router(services.router)

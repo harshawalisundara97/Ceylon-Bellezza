@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getSalons } from "@/lib/api";
 import SalonDirectory from "@/components/SalonDirectory";
 
@@ -17,6 +18,9 @@ export default async function HomePage() {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-terracotta-light">Ceylon Bellezza</p>
         <h1 className="mt-3 font-serif text-4xl text-white sm:text-5xl">Find your next favourite salon</h1>
         <p className="mt-3 max-w-md text-base text-white/80">Curated hair, beauty &amp; grooming across Sri Lanka</p>
+        <Link href="/join" className="mt-4 text-sm text-white underline underline-offset-4 hover:text-terracotta-light">
+          List Your Salon
+        </Link>
       </section>
       <SalonDirectory initialSalons={salons} />
     </main>
