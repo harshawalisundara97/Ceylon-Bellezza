@@ -65,3 +65,10 @@ export interface Booking {
   scheduled_at: string;
   status: string;
 }
+
+export interface LeadCreatePayload {
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+  message: string;
+}
