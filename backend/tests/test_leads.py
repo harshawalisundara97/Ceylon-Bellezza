@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from app.auth.security import create_access_token
 from app.models import SalonLead
 
@@ -66,3 +68,66 @@ def test_reject_already_processed_lead_returns_409(client, db_session):
     client.patch(f"/admin/leads/{lead.id}/status", json={"status": "rejected"}, headers=headers)
     second = client.patch(f"/admin/leads/{lead.id}/status", json={"status": "rejected"}, headers=headers)
     assert second.status_code == 409
+
+
+def test_approve_lead_creates_salon_and_admin(client, db_session):
+    lead = _create_lead(db_session)
+    token = _platform_token()
+    with (
+        patch("app.routers.leads.geocode_address", return_value=(6.9, 79.8)),
+        patch("app.routers.leads.send_owner_invite", return_value=True) as mock_send,
+    ):
+        response = client.post(
+            f"/admin/leads/{lead.id}/approve",
+            json={
+                "slug": "new-salon",
+                "name": "New Salon",
+                "category": "unisex",
+                "address": "1 Main St",
+                "city": "Colombo",
+            },
+            headers={"Authorization": f"Bearer {token}"},
+        )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["slug"] == "new-salon"
+    assert body["email_sent"] is True
+    assert "temporary_password" in body
+    mock_send.assert_called_once()
+
+    login = client.post(
+        "/auth/salon-admin/login",
+        json={"email": "nimal@example.com", "password": body["temporary_password"]},
+    )
+    assert login.status_code == 200
+
+
+def test_approve_already_processed_lead_returns_409(client, db_session):
+    lead = _create_lead(db_session)
+    token = _platform_token()
+    headers = {"Authorization": f"Bearer {token}"}
+    client.patch(f"/admin/leads/{lead.id}/status", json={"status": "rejected"}, headers=headers)
+
+    with patch("app.routers.leads.geocode_address", return_value=(6.9, 79.8)):
+        response = client.post(
+            f"/admin/leads/{lead.id}/approve",
+            json={"slug": "x", "name": "X", "category": "unisex", "address": "A", "city": "Colombo"},
+            headers=headers,
+        )
+    assert response.status_code == 409
+
+
+def test_approve_lead_email_failure_does_not_block_salon_creation(client, db_session):
+    lead = _create_lead(db_session)
+    token = _platform_token()
+    with (
+        patch("app.routers.leads.geocode_address", return_value=(6.9, 79.8)),
+        patch("app.routers.leads.send_owner_invite", return_value=False),
+    ):
+        response = client.post(
+            f"/admin/leads/{lead.id}/approve",
+            json={"slug": "new-salon-2", "name": "New Salon 2", "category": "unisex", "address": "A", "city": "Colombo"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+    assert response.status_code == 200
+    assert response.json()["email_sent"] is False
