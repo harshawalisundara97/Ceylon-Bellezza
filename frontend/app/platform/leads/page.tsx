@@ -129,6 +129,13 @@ export default function PlatformLeadsPage() {
                   <p className="text-sm text-taupe">
                     {lead.contact_phone} · {lead.contact_email}
                   </p>
+                  <p className="text-xs text-taupe">
+                    {new Date(lead.created_at).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
                 </div>
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ${
