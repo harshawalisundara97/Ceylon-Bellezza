@@ -6,8 +6,7 @@ import StaffList from "@/components/StaffList";
 import GalleryGrid from "@/components/GalleryGrid";
 import AboutContact from "@/components/AboutContact";
 import BookingForm from "@/components/BookingForm";
-import { motion } from "framer-motion";
-import { scrollReveal, fadeInUp } from "@/lib/motion";
+import Reveal from "@/components/ui/Reveal";
 
 export default async function SalonPage({ params }: { params: { slug: string } }) {
   const salon = await getSalonBySlug(params.slug);
@@ -20,22 +19,22 @@ export default async function SalonPage({ params }: { params: { slug: string } }
     <main>
       <SalonHero salon={salon} />
       <BookingForm salon={salon} />
-      <motion.div {...scrollReveal} variants={fadeInUp}>
+      <Reveal>
         <ServiceList services={salon.services} />
-      </motion.div>
+      </Reveal>
       {salon.staff.length > 0 && (
-        <motion.div {...scrollReveal} variants={fadeInUp}>
+        <Reveal>
           <StaffList staff={salon.staff} />
-        </motion.div>
+        </Reveal>
       )}
       {salon.gallery.length > 0 && (
-        <motion.div {...scrollReveal} variants={fadeInUp}>
+        <Reveal>
           <GalleryGrid items={salon.gallery} />
-        </motion.div>
+        </Reveal>
       )}
-      <motion.div {...scrollReveal} variants={fadeInUp}>
+      <Reveal>
         <AboutContact content={salon.content} />
-      </motion.div>
+      </Reveal>
     </main>
   );
 }
