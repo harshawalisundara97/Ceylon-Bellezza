@@ -7,6 +7,9 @@ import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PageHeading from "@/components/ui/PageHeading";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/ui/Toast";
 
 interface Staff {
   id: string;
@@ -24,6 +27,7 @@ export default function StaffPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   async function loadStaff() {
     setLoading(true);
@@ -31,7 +35,9 @@ export default function StaffPage() {
       const data = await adminFetch<Staff[]>("/dashboard/staff");
       setStaff(data);
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to load staff");
+      const message = err instanceof AdminApiError ? err.message : "Failed to load staff";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -63,8 +69,11 @@ export default function StaffPage() {
       }
       cancelEdit();
       await loadStaff();
+      showToast("Saved", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to save staff member");
+      const message = err instanceof AdminApiError ? err.message : "Failed to save staff member";
+      setError(message);
+      showToast(message, "error");
     }
   }
 
@@ -73,8 +82,11 @@ export default function StaffPage() {
     try {
       await adminFetch<void>(`/dashboard/staff/${id}`, { method: "DELETE" });
       await loadStaff();
+      showToast("Deleted", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to delete staff member");
+      const message = err instanceof AdminApiError ? err.message : "Failed to delete staff member";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setConfirmingId(null);
     }
@@ -117,9 +129,16 @@ export default function StaffPage() {
       </Card>
 
       {loading ? (
-        <p className="mt-6 text-taupe">Loading...</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+        </div>
       ) : staff.length === 0 ? (
-        <p className="mt-6 text-taupe">No staff yet — add your first team member above.</p>
+        <EmptyState
+          title="No staff yet"
+          description="Add your first staff member to get started."
+        />
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {staff.map((member) => (
@@ -144,7 +163,7 @@ export default function StaffPage() {
                   </>
                 ) : (
                   <>
-                    <button onClick={() => startEdit(member)} className="text-sm text-terracotta">
+                    <button onClick={() => startEdit(member)} className="text-sm text-accent">
                       Edit
                     </button>
                     <Button variant="danger" onClick={() => setConfirmingId(member.id)}>

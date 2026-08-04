@@ -44,23 +44,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-ivory">
+    <div className="flex min-h-screen bg-bg">
       <aside className="w-56 shrink-0 border-r border-hairline bg-white p-6">
-        <p className="font-serif text-sm uppercase tracking-wide text-terracotta">Salon Admin</p>
+        <p className="font-serif text-sm uppercase tracking-wide text-accent">Salon Admin</p>
         <nav className="mt-6 flex flex-col gap-2">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`rounded px-3 py-2 text-sm ${
-                pathname === link.href ? "bg-terracotta/10 text-terracotta" : "text-ink hover:bg-ivory"
+                pathname === link.href ? "bg-accent/10 text-accent" : "text-ink hover:bg-bg"
               }`}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <button onClick={handleLogout} className="mt-8 text-sm text-taupe hover:text-terracotta">
+        <button onClick={handleLogout} className="mt-8 text-sm text-taupe hover:text-accent">
           Log Out
         </button>
       </aside>

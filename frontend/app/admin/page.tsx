@@ -16,7 +16,7 @@ export default function AdminHomePage() {
       <p className="mt-1 text-taupe">Manage your salon&apos;s public listing from here.</p>
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {SECTIONS.map((section) => (
-          <Card as={Link} key={section.href} href={section.href} className="block hover:border-terracotta">
+          <Card as={Link} key={section.href} href={section.href} className="block hover:border-accent">
             <p className="font-medium text-ink">{section.label}</p>
             <p className="mt-1 text-sm text-taupe">{section.description}</p>
           </Card>
