@@ -36,17 +36,17 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
   }
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-bg">
       <header className="flex items-center justify-between border-b border-hairline bg-white px-8 py-4">
-        <p className="font-serif text-sm uppercase tracking-wide text-terracotta">Ceylon Bellezza — Platform Admin</p>
+        <p className="font-serif text-sm uppercase tracking-wide text-accent">Ceylon Bellezza — Platform Admin</p>
         <nav className="flex items-center gap-4">
-          <Link href="/platform" className={`text-sm ${pathname === "/platform" ? "text-terracotta" : "text-ink hover:text-terracotta"}`}>
+          <Link href="/platform" className={`text-sm ${pathname === "/platform" ? "text-accent" : "text-ink hover:text-accent"}`}>
             Salons
           </Link>
-          <Link href="/platform/leads" className={`text-sm ${pathname === "/platform/leads" ? "text-terracotta" : "text-ink hover:text-terracotta"}`}>
+          <Link href="/platform/leads" className={`text-sm ${pathname === "/platform/leads" ? "text-accent" : "text-ink hover:text-accent"}`}>
             Leads
           </Link>
-          <button onClick={handleLogout} className="text-sm text-taupe hover:text-terracotta">
+          <button onClick={handleLogout} className="text-sm text-taupe hover:text-accent">
             Log Out
           </button>
         </nav>

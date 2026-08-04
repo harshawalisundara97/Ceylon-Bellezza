@@ -6,6 +6,9 @@ import PageHeading from "@/components/ui/PageHeading";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import Badge from "@/components/ui/Badge";
 
 interface Salon {
   id: string;
@@ -188,9 +191,15 @@ export default function PlatformSalonsPage() {
       </Card>
 
       {loading ? (
-        <p className="mt-6 text-taupe">Loading...</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Skeleton className="h-12 rounded-md" />
+          <Skeleton className="h-12 rounded-md" />
+          <Skeleton className="h-12 rounded-md" />
+        </div>
       ) : salons.length === 0 ? (
-        <p className="mt-6 text-taupe">No salons yet.</p>
+        <div className="mt-6">
+          <EmptyState title="No salons yet" />
+        </div>
       ) : (
         <table className="mt-6 w-full border-collapse text-left">
           <thead>
@@ -206,19 +215,13 @@ export default function PlatformSalonsPage() {
           <tbody className="divide-y divide-hairline">
             {salons.map((salon) => (
               <React.Fragment key={salon.id}>
-                <tr key={salon.id} onClick={() => setExpandedId(expandedId === salon.id ? null : salon.id)} className="cursor-pointer hover:bg-ivory">
+                <tr key={salon.id} onClick={() => setExpandedId(expandedId === salon.id ? null : salon.id)} className="cursor-pointer hover:bg-bg">
                   <td className="py-3 text-ink">{salon.name}</td>
                   <td className="py-3 text-taupe">{salon.slug}</td>
                   <td className="py-3 text-taupe">{salon.city}</td>
                   <td className="py-3 text-taupe">{salon.category}</td>
                   <td className="py-3">
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ${
-                        salon.status === "active" ? "bg-terracotta/10 text-terracotta" : "bg-hairline text-taupe"
-                      }`}
-                    >
-                      {salon.status}
-                    </span>
+                    <Badge variant={salon.status === "active" ? "success" : "neutral"}>{salon.status}</Badge>
                   </td>
                   <td className="py-3 text-sm text-taupe">
                     {[
@@ -232,7 +235,7 @@ export default function PlatformSalonsPage() {
                 </tr>
                 {expandedId === salon.id && (
                   <tr key={`${salon.id}-panel`}>
-                    <td colSpan={6} className="bg-ivory px-4 py-4">
+                    <td colSpan={6} className="bg-bg px-4 py-4">
                       <div className="flex flex-wrap items-center gap-6">
                         <label className="text-sm text-ink">
                           Status:

@@ -32,7 +32,7 @@ export default function PlatformLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-ivory px-6">
+    <main className="flex min-h-screen items-center justify-center bg-bg px-6">
       <Card as="form" className="w-full max-w-sm p-8" onSubmit={handleSubmit}>
         <PageHeading className="text-xl">Platform Admin Login</PageHeading>
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
