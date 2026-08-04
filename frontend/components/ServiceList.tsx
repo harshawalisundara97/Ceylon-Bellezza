@@ -15,7 +15,7 @@ export default function ServiceList({ services }: { services: Service[] }) {
       <h2 className="font-serif text-2xl text-ink">Services</h2>
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category} className="mt-8">
-          <h3 className="border-b border-terracotta/30 pb-2 font-serif text-sm uppercase tracking-widest text-terracotta">
+          <h3 className="border-b border-accent/30 pb-2 font-serif text-sm uppercase tracking-widest text-accent">
             {category}
           </h3>
           <ul className="mt-3 divide-y divide-hairline">
@@ -25,7 +25,7 @@ export default function ServiceList({ services }: { services: Service[] }) {
                   <p className="font-medium text-ink">{service.name}</p>
                   <p className="text-sm text-taupe">{service.duration_minutes} min</p>
                 </div>
-                <p className="font-serif font-semibold text-terracotta">Rs. {service.price.toLocaleString()}</p>
+                <p className="font-serif font-semibold text-accent">Rs. {service.price.toLocaleString()}</p>
               </li>
             ))}
           </ul>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createBooking } from "@/lib/api";
 import { SalonDetail } from "@/lib/types";
+import { useToast } from "@/components/ui/Toast";
 
 const EMPTY_FORM = {
   service_id: "",
@@ -14,9 +15,10 @@ const EMPTY_FORM = {
   gender: "" as "" | "male" | "female" | "other",
 };
 
-const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-terracotta focus:outline-none";
+const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-accent focus:outline-none";
 
 export default function BookingForm({ salon }: { salon: SalonDetail }) {
+  const { showToast } = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -38,8 +40,11 @@ export default function BookingForm({ salon }: { salon: SalonDetail }) {
       });
       setSuccess(true);
       setForm(EMPTY_FORM);
+      showToast("Booking request sent!", "success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Booking failed");
+      const errorMessage = err instanceof Error ? err.message : "Booking failed";
+      setError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setSubmitting(false);
     }
@@ -134,7 +139,7 @@ export default function BookingForm({ salon }: { salon: SalonDetail }) {
           <button
             type="submit"
             disabled={submitting}
-            className="rounded bg-terracotta px-4 py-2 text-white disabled:opacity-50"
+            className="rounded bg-accent px-4 py-2 text-white disabled:opacity-50"
           >
             {submitting ? "Booking..." : "Confirm Booking"}
           </button>
