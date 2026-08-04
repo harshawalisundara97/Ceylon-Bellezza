@@ -751,3 +751,12 @@ Run: `cd frontend && npm run build`
 Expected: clean build, exit code 0, no warnings about unresolved Tailwind classes.
 
 No commit for this task — it's verification only. If any issue is found, fix it in the relevant earlier task's files and amend that task's commit or add a small fixup commit, then re-run this task's steps.
+
+## Post-Implementation Notes
+
+Two client components were added during implementation/review that aren't in the task list above, because they exist to fix a bug the plan didn't anticipate: Framer Motion (`motion.*`) cannot be rendered directly inside a Server Component (Next.js App Router pages are Server Components by default) — doing so compiles and builds successfully but fails at runtime with "Could not find the module ... in the React Client Manifest". Neither `tsc --noEmit` nor `npm run build` catches this; it only surfaces in the browser.
+
+- `frontend/components/Hero.tsx` — extracts the homepage hero's `fadeInUp` entrance into its own `"use client"` component, since `app/page.tsx` is an async Server Component.
+- `frontend/components/ui/Reveal.tsx` — a reusable `"use client"` wrapper applying `scrollReveal`/`fadeInUp` to any children, used by the salon detail page (also a Server Component) for its four scroll-reveal sections.
+
+**For future phases:** any new Server Component page that wants a Framer Motion entrance/scroll-reveal should use `Reveal` (or a similar dedicated client wrapper) rather than importing `motion` directly into the page file. Any component using `framer-motion` or a hook from `frontend/lib/motion.ts` needs its own `"use client"` directive unless it's exclusively rendered from within an already-client parent (e.g. `SalonCard` inside `SalonDirectory`) — verify this per component, since it's easy to add motion to a component that later gets reused from a Server Component context.
