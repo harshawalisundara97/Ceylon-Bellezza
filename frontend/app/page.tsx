@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { getSalons } from "@/lib/api";
 import SalonDirectory from "@/components/SalonDirectory";
+import { fadeInUp } from "@/lib/motion";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80";
 
@@ -9,19 +11,22 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
         className="flex h-[420px] flex-col items-center justify-center bg-cover bg-center px-6 text-center"
         style={{
           backgroundImage: `linear-gradient(180deg, rgba(20,15,10,0.15) 0%, rgba(20,15,10,0.55) 100%), url('${HERO_IMAGE}')`,
         }}
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-terracotta-light">Ceylon Bellezza</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent-light">Ceylon Bellezza</p>
         <h1 className="mt-3 font-serif text-4xl text-white sm:text-5xl">Find your next favourite salon</h1>
         <p className="mt-3 max-w-md text-base text-white/80">Curated hair, beauty &amp; grooming across Sri Lanka</p>
-        <Link href="/join" className="mt-4 text-sm text-white underline underline-offset-4 hover:text-terracotta-light">
+        <Link href="/join" className="mt-4 text-sm text-white underline underline-offset-4 hover:text-accent-light">
           List Your Salon
         </Link>
-      </section>
+      </motion.div>
       <SalonDirectory initialSalons={salons} />
     </main>
   );

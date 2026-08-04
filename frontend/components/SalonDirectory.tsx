@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { SalonSummary } from "@/lib/types";
 import SalonCard from "./SalonCard";
 import SearchBar from "./SearchBar";
+import { staggerContainer, staggerItem } from "@/lib/motion";
 
 export default function SalonDirectory({ initialSalons }: { initialSalons: SalonSummary[] }) {
   const [query, setQuery] = useState("");
@@ -30,11 +31,11 @@ export default function SalonDirectory({ initialSalons }: { initialSalons: Salon
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+          variants={staggerContainer}
           className="grid grid-cols-1 gap-6 px-6 pb-16 pt-10 sm:grid-cols-2 lg:grid-cols-3"
         >
           {filtered.map((salon) => (
-            <motion.div key={salon.id} variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
+            <motion.div key={salon.id} variants={staggerItem}>
               <SalonCard salon={salon} />
             </motion.div>
           ))}
