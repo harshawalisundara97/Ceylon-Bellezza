@@ -111,7 +111,7 @@ export default function PlatformLeadsPage() {
   return (
     <div>
       <h1 className="font-serif text-2xl text-ink">Leads</h1>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       {result && (
         <div className="mt-4 rounded-lg border border-hairline bg-white p-4 text-sm">
           <p className="text-ink">
@@ -165,7 +165,7 @@ export default function PlatformLeadsPage() {
                   <button onClick={() => startReview(lead)} className="text-sm text-accent">
                     Review
                   </button>
-                  <button onClick={() => handleReject(lead.id)} className="text-sm text-red-600">
+                  <button onClick={() => handleReject(lead.id)} className="text-sm text-danger">
                     Reject
                   </button>
                 </div>

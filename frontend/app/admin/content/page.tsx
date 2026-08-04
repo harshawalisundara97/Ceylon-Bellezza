@@ -82,7 +82,7 @@ export default function ContentPage() {
   return (
     <div>
       <PageHeading>Content</PageHeading>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {FIELDS.map((field) => (
         <Card key={field.key} className="mt-6">

@@ -77,7 +77,7 @@ export default function GalleryPage() {
   return (
     <div>
       <PageHeading>Gallery</PageHeading>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       <Card as="form" onSubmit={handleSubmit} className="mt-6">
         <p className="font-medium text-ink">Add photo</p>

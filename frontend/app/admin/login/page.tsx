@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-bg px-6">
       <Card as="form" className="w-full max-w-sm p-8" onSubmit={handleSubmit}>
         <PageHeading className="text-xl">Salon Admin Login</PageHeading>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-danger">{error}</p>}
         <label className="mt-6 block text-sm text-taupe">
           Email
           <Input

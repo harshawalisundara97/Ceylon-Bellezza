@@ -61,7 +61,7 @@ export default function BookingForm({ salon }: { salon: SalonDetail }) {
   return (
     <section id="book" className="mx-auto max-w-lg px-6 py-12">
       <h2 className="font-serif text-2xl text-ink">Book Appointment</h2>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-hairline bg-white p-5">
         <div className="grid gap-4">
           <select

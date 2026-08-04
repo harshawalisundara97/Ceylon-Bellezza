@@ -41,7 +41,7 @@ export default function JoinPage() {
     <main className="mx-auto max-w-lg px-6 py-24">
       <h1 className="font-serif text-3xl text-ink">List Your Salon</h1>
       <p className="mt-2 text-taupe">Tell us about your salon and we'll be in touch.</p>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-hairline bg-white p-5">
         <div className="grid gap-4">
           <input

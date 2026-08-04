@@ -5,7 +5,7 @@ type Variant = "primary" | "secondary" | "danger";
 const VARIANT_CLASSES: Record<Variant, string> = {
   primary: "bg-accent text-white disabled:opacity-50",
   secondary: "border border-hairline text-ink hover:border-accent",
-  danger: "text-sm text-red-600",
+  danger: "text-sm text-danger",
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
