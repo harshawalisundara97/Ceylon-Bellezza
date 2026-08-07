@@ -5,7 +5,7 @@ import { createLead } from "@/lib/api";
 
 const EMPTY_FORM = { contact_name: "", contact_phone: "", contact_email: "", message: "" };
 
-const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-terracotta focus:outline-none";
+const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-accent focus:outline-none";
 
 export default function JoinPage() {
   const [form, setForm] = useState(EMPTY_FORM);
@@ -41,7 +41,7 @@ export default function JoinPage() {
     <main className="mx-auto max-w-lg px-6 py-24">
       <h1 className="font-serif text-3xl text-ink">List Your Salon</h1>
       <p className="mt-2 text-taupe">Tell us about your salon and we'll be in touch.</p>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       <form onSubmit={handleSubmit} className="mt-6 rounded-lg border border-hairline bg-white p-5">
         <div className="grid gap-4">
           <input
@@ -78,7 +78,7 @@ export default function JoinPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-4 rounded bg-terracotta px-4 py-2 text-white disabled:opacity-50"
+          className="mt-4 rounded bg-accent px-4 py-2 text-white disabled:opacity-50"
         >
           {submitting ? "Sending..." : "Submit"}
         </button>

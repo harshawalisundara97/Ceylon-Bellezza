@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { platformFetch, PlatformApiError } from "@/lib/platformApi";
+import { useToast } from "@/components/ui/Toast";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import Badge from "@/components/ui/Badge";
 
 interface Lead {
   id: string;
@@ -15,9 +19,10 @@ interface Lead {
 
 const EMPTY_APPROVE_FORM = { slug: "", name: "", category: "", address: "", city: "", latitude: "", longitude: "" };
 
-const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-terracotta focus:outline-none";
+const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-accent focus:outline-none";
 
 export default function PlatformLeadsPage() {
+  const { showToast } = useToast();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,8 +64,11 @@ export default function PlatformLeadsPage() {
       });
       setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
       setReviewingId(null);
+      showToast("Lead rejected", "success");
     } catch (err) {
-      setError(err instanceof PlatformApiError ? err.message : "Failed to reject lead");
+      const message = err instanceof PlatformApiError ? err.message : "Failed to reject lead";
+      setError(message);
+      showToast(message, "error");
     }
   }
 
@@ -90,8 +98,11 @@ export default function PlatformLeadsPage() {
       });
       await loadLeads();
       setReviewingId(null);
+      showToast("Salon created", "success");
     } catch (err) {
-      setError(err instanceof PlatformApiError ? err.message : "Failed to approve lead");
+      const message = err instanceof PlatformApiError ? err.message : "Failed to approve lead";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -100,7 +111,7 @@ export default function PlatformLeadsPage() {
   return (
     <div>
       <h1 className="font-serif text-2xl text-ink">Leads</h1>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       {result && (
         <div className="mt-4 rounded-lg border border-hairline bg-white p-4 text-sm">
           <p className="text-ink">
@@ -116,9 +127,15 @@ export default function PlatformLeadsPage() {
       )}
 
       {loading ? (
-        <p className="mt-6 text-taupe">Loading...</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Skeleton className="h-12 rounded-md" />
+          <Skeleton className="h-12 rounded-md" />
+          <Skeleton className="h-12 rounded-md" />
+        </div>
       ) : leads.length === 0 ? (
-        <p className="mt-6 text-taupe">No leads yet.</p>
+        <div className="mt-6">
+          <EmptyState title="No leads yet" />
+        </div>
       ) : (
         <div className="mt-6 flex flex-col gap-4">
           {leads.map((lead) => (
@@ -137,26 +154,18 @@ export default function PlatformLeadsPage() {
                     })}
                   </p>
                 </div>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ${
-                    lead.status === "pending"
-                      ? "bg-terracotta/10 text-terracotta"
-                      : lead.status === "approved"
-                        ? "bg-hairline text-ink"
-                        : "bg-hairline text-taupe"
-                  }`}
-                >
+                <Badge variant={lead.status === "pending" ? "warning" : lead.status === "approved" ? "success" : "neutral"}>
                   {lead.status}
-                </span>
+                </Badge>
               </div>
               {lead.message && <p className="mt-2 text-sm text-taupe">{lead.message}</p>}
 
               {lead.status === "pending" && reviewingId !== lead.id && (
                 <div className="mt-3 flex gap-3">
-                  <button onClick={() => startReview(lead)} className="text-sm text-terracotta">
+                  <button onClick={() => startReview(lead)} className="text-sm text-accent">
                     Review
                   </button>
-                  <button onClick={() => handleReject(lead.id)} className="text-sm text-red-600">
+                  <button onClick={() => handleReject(lead.id)} className="text-sm text-danger">
                     Reject
                   </button>
                 </div>
@@ -222,7 +231,7 @@ export default function PlatformLeadsPage() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="rounded bg-terracotta px-4 py-2 text-sm text-white disabled:opacity-50"
+                      className="rounded bg-accent px-4 py-2 text-sm text-white disabled:opacity-50"
                     >
                       {submitting ? "Approving..." : "Approve & Create Salon"}
                     </button>

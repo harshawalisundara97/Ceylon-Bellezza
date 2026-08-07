@@ -7,6 +7,9 @@ import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import PageHeading from "@/components/ui/PageHeading";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/ui/Toast";
 
 interface Service {
   id: string;
@@ -26,6 +29,7 @@ export default function ServicesPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   async function loadServices() {
     setLoading(true);
@@ -33,7 +37,9 @@ export default function ServicesPage() {
       const data = await adminFetch<Service[]>("/dashboard/services");
       setServices(data);
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to load services");
+      const message = err instanceof AdminApiError ? err.message : "Failed to load services";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -87,8 +93,11 @@ export default function ServicesPage() {
       }
       cancelEdit();
       await loadServices();
+      showToast("Saved", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to save service");
+      const message = err instanceof AdminApiError ? err.message : "Failed to save service";
+      setError(message);
+      showToast(message, "error");
     }
   }
 
@@ -97,8 +106,11 @@ export default function ServicesPage() {
     try {
       await adminFetch<void>(`/dashboard/services/${id}`, { method: "DELETE" });
       await loadServices();
+      showToast("Deleted", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to delete service");
+      const message = err instanceof AdminApiError ? err.message : "Failed to delete service";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setConfirmingId(null);
     }
@@ -107,7 +119,7 @@ export default function ServicesPage() {
   return (
     <div>
       <PageHeading>Services</PageHeading>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       <Card as="form" onSubmit={handleSubmit} className="mt-6">
         <p className="font-medium text-ink">{editingId ? "Edit service" : "Add service"}</p>
@@ -159,9 +171,16 @@ export default function ServicesPage() {
       </Card>
 
       {loading ? (
-        <p className="mt-6 text-taupe">Loading...</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+        </div>
       ) : services.length === 0 ? (
-        <p className="mt-6 text-taupe">No services yet — add your first one above.</p>
+        <EmptyState
+          title="No services yet"
+          description="Add your first service to get started."
+        />
       ) : (
         <table className="mt-6 w-full border-collapse text-left">
           <thead>
@@ -193,7 +212,7 @@ export default function ServicesPage() {
                     </>
                   ) : (
                     <>
-                      <button onClick={() => startEdit(service)} className="mr-3 text-sm text-terracotta">
+                      <button onClick={() => startEdit(service)} className="mr-3 text-sm text-accent">
                         Edit
                       </button>
                       <Button variant="danger" onClick={() => setConfirmingId(service.id)}>

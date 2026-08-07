@@ -6,6 +6,8 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Textarea from "@/components/ui/Textarea";
 import PageHeading from "@/components/ui/PageHeading";
+import Skeleton from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
 
 interface ContentBlock {
   id: string;
@@ -24,6 +26,7 @@ export default function ContentPage() {
   const [error, setError] = useState<string | null>(null);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [savedKey, setSavedKey] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     async function loadContent() {
@@ -36,7 +39,9 @@ export default function ContentPage() {
         }
         setValues(next);
       } catch (err) {
-        setError(err instanceof AdminApiError ? err.message : "Failed to load content");
+        const message = err instanceof AdminApiError ? err.message : "Failed to load content";
+        setError(message);
+        showToast(message, "error");
       } finally {
         setLoading(false);
       }
@@ -54,21 +59,30 @@ export default function ContentPage() {
         body: JSON.stringify({ value: values[key] }),
       });
       setSavedKey(key);
+      showToast("Saved", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to save content");
+      const message = err instanceof AdminApiError ? err.message : "Failed to save content";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setSavingKey(null);
     }
   }
 
   if (loading) {
-    return <p className="text-taupe">Loading...</p>;
+    return (
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-16 rounded-md" />
+        <Skeleton className="h-16 rounded-md" />
+        <Skeleton className="h-16 rounded-md" />
+      </div>
+    );
   }
 
   return (
     <div>
       <PageHeading>Content</PageHeading>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {FIELDS.map((field) => (
         <Card key={field.key} className="mt-6">

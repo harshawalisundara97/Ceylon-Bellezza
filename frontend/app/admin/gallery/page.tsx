@@ -6,6 +6,9 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import PageHeading from "@/components/ui/PageHeading";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/ui/Toast";
 
 interface GalleryItem {
   id: string;
@@ -21,6 +24,7 @@ export default function GalleryPage() {
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   async function loadItems() {
     setLoading(true);
@@ -28,7 +32,9 @@ export default function GalleryPage() {
       const data = await adminFetch<GalleryItem[]>("/dashboard/gallery");
       setItems(data);
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to load gallery");
+      const message = err instanceof AdminApiError ? err.message : "Failed to load gallery";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -45,8 +51,11 @@ export default function GalleryPage() {
       await adminFetch<GalleryItem>("/dashboard/gallery", { method: "POST", body: JSON.stringify(form) });
       setForm(EMPTY_FORM);
       await loadItems();
+      showToast("Saved", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to add photo");
+      const message = err instanceof AdminApiError ? err.message : "Failed to add photo";
+      setError(message);
+      showToast(message, "error");
     }
   }
 
@@ -55,8 +64,11 @@ export default function GalleryPage() {
     try {
       await adminFetch<void>(`/dashboard/gallery/${id}`, { method: "DELETE" });
       await loadItems();
+      showToast("Deleted", "success");
     } catch (err) {
-      setError(err instanceof AdminApiError ? err.message : "Failed to delete photo");
+      const message = err instanceof AdminApiError ? err.message : "Failed to delete photo";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setConfirmingId(null);
     }
@@ -65,7 +77,7 @@ export default function GalleryPage() {
   return (
     <div>
       <PageHeading>Gallery</PageHeading>
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       <Card as="form" onSubmit={handleSubmit} className="mt-6">
         <p className="font-medium text-ink">Add photo</p>
@@ -88,9 +100,16 @@ export default function GalleryPage() {
       </Card>
 
       {loading ? (
-        <p className="mt-6 text-taupe">Loading...</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+          <Skeleton className="h-16 rounded-md" />
+        </div>
       ) : items.length === 0 ? (
-        <p className="mt-6 text-taupe">No photos yet — add your first one above.</p>
+        <EmptyState
+          title="No gallery items yet"
+          description="Add your first gallery item to get started."
+        />
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (

@@ -4,7 +4,7 @@ const DEFAULT_STAFF_PHOTO = "https://images.unsplash.com/photo-1580489944761-15a
 
 export default function StaffList({ staff }: { staff: Staff[] }) {
   return (
-    <section className="bg-ivory px-6 py-12">
+    <section className="bg-bg px-6 py-12">
       <h2 className="font-serif text-2xl text-ink">Our Team</h2>
       <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4">
         {staff.map((member) => (

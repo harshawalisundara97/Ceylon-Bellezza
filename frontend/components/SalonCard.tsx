@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SalonSummary } from "@/lib/types";
 import Card from "@/components/ui/Card";
+import { staggerItem, scaleTap, usePrefersReducedMotion } from "@/lib/motion";
 
 const DEFAULT_COVER_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80";
 
@@ -11,11 +14,14 @@ function coverImage(salon: SalonSummary): string {
 }
 
 export default function SalonCard({ salon }: { salon: SalonSummary }) {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   return (
     <Card
       as={motion.div}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
+      variants={staggerItem}
+      {...scaleTap}
+      {...(prefersReducedMotion ? { transition: { duration: 0.01 } } : {})}
       padding={false}
       className="group overflow-hidden transition-shadow duration-300 hover:shadow-xl"
     >
@@ -28,7 +34,7 @@ export default function SalonCard({ salon }: { salon: SalonSummary }) {
           />
         </div>
         <div className="p-4">
-          <span className="inline-block rounded-full bg-terracotta/10 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-terracotta">
+          <span className="inline-block rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-accent">
             {salon.category}
           </span>
           <h3 className="mt-2 font-serif text-lg text-ink">{salon.name}</h3>

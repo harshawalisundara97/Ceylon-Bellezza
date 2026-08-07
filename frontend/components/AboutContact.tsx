@@ -4,7 +4,7 @@ export default function AboutContact({ content }: { content: Record<string, stri
   }
 
   return (
-    <section className="bg-ivory px-6 py-12">
+    <section className="bg-bg px-6 py-12">
       <div className="grid gap-8 md:grid-cols-2">
         {content.about_us && (
           <div>

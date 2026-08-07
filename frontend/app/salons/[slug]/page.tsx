@@ -6,6 +6,7 @@ import StaffList from "@/components/StaffList";
 import GalleryGrid from "@/components/GalleryGrid";
 import AboutContact from "@/components/AboutContact";
 import BookingForm from "@/components/BookingForm";
+import Reveal from "@/components/ui/Reveal";
 
 export default async function SalonPage({ params }: { params: { slug: string } }) {
   const salon = await getSalonBySlug(params.slug);
@@ -18,10 +19,22 @@ export default async function SalonPage({ params }: { params: { slug: string } }
     <main>
       <SalonHero salon={salon} />
       <BookingForm salon={salon} />
-      <ServiceList services={salon.services} />
-      {salon.staff.length > 0 && <StaffList staff={salon.staff} />}
-      {salon.gallery.length > 0 && <GalleryGrid items={salon.gallery} />}
-      <AboutContact content={salon.content} />
+      <Reveal>
+        <ServiceList services={salon.services} />
+      </Reveal>
+      {salon.staff.length > 0 && (
+        <Reveal>
+          <StaffList staff={salon.staff} />
+        </Reveal>
+      )}
+      {salon.gallery.length > 0 && (
+        <Reveal>
+          <GalleryGrid items={salon.gallery} />
+        </Reveal>
+      )}
+      <Reveal>
+        <AboutContact content={salon.content} />
+      </Reveal>
     </main>
   );
 }
