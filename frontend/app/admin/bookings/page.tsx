@@ -9,6 +9,7 @@ import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
 import DayCalendar from "./DayCalendar";
+import BookingDetailModal from "./BookingDetailModal";
 
 export interface DashboardBooking {
   id: string;
@@ -58,6 +59,7 @@ export default function BookingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
+  const [selectedBooking, setSelectedBooking] = useState<DashboardBooking | null>(null);
 
   async function load() {
     setLoading(true);
@@ -129,8 +131,13 @@ export default function BookingsPage() {
       ) : bookings.length === 0 ? (
         <EmptyState title="No bookings for this day" description="Try a different date or status filter." />
       ) : (
-        <DayCalendar bookings={bookings} staff={staff} onSelectBooking={() => {}} />
+        <DayCalendar bookings={bookings} staff={staff} onSelectBooking={setSelectedBooking} />
       )}
+      <BookingDetailModal
+        booking={selectedBooking}
+        onClose={() => setSelectedBooking(null)}
+        onStatusChanged={updateBookingInPlace}
+      />
     </div>
   );
 }
