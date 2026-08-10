@@ -42,7 +42,12 @@ const STATUS_OPTIONS = [
 ];
 
 function toIsoDate(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  // Local calendar date. The grid positions blocks by local clock time and the
+  // header renders the local date, so the query window must be local as well —
+  // toISOString() would shift the date across the UTC boundary.
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${month}-${day}`;
 }
 
 function addDays(d: Date, days: number): Date {
@@ -66,7 +71,9 @@ export default function BookingsPage() {
     setError(null);
     try {
       const from = toIsoDate(selectedDate);
-      const to = toIsoDate(addDays(selectedDate, 1));
+      // to_date is inclusive of that whole calendar day on the backend, so a
+      // single-day view sends the same date for both bounds.
+      const to = from;
       const params = new URLSearchParams({ from_date: from, to_date: to });
       if (statusFilter) params.set("status", statusFilter);
       const [bookingsData, staffData] = await Promise.all([

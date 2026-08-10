@@ -75,7 +75,7 @@ export default function DayCalendar({ bookings, staff, onSelectBooking }: DayCal
               <div className="flex h-10 items-center justify-center border-b border-hairline px-2 text-sm font-medium text-ink">
                 {column.name}
               </div>
-              <div style={{ height: GRID_HEIGHT_PX }} className="relative bg-bg">
+              <div style={{ height: GRID_HEIGHT_PX }} className="relative overflow-hidden bg-bg">
                 {hourLabels.slice(0, -1).map((hour) => (
                   <div
                     key={hour}
@@ -85,7 +85,7 @@ export default function DayCalendar({ bookings, staff, onSelectBooking }: DayCal
                 ))}
                 {columnBookings.map((booking) => {
                   const offset = minutesSinceWindowStart(booking.scheduled_at);
-                  if (offset < 0 || offset > WINDOW_MINUTES) return null;
+                  if (offset < 0 || offset >= WINDOW_MINUTES) return null;
                   const top = (offset / WINDOW_MINUTES) * 100;
                   const height = (BLOCK_MINUTES / WINDOW_MINUTES) * 100;
                   return (
