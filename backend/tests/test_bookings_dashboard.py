@@ -149,3 +149,45 @@ def test_update_booking_status_accepts_completed(client, db_session):
 
     assert response.status_code == 200
     assert response.json()["status"] == "completed"
+
+
+def test_list_bookings_to_date_excludes_later_days(client, db_session):
+    salon, token = _salon_and_token(db_session)
+    service, staff = _service_and_staff(db_session, salon)
+    target_day = datetime.now(timezone.utc) + timedelta(days=1)
+    day_after = target_day + timedelta(days=1)
+    in_range = _booking(salon, service, staff, target_day)
+    out_of_range = _booking(salon, service, staff, day_after)
+    db_session.add_all([in_range, out_of_range])
+    db_session.commit()
+
+    response = client.get(
+        "/dashboard/bookings",
+        params={"from_date": target_day.date().isoformat(), "to_date": target_day.date().isoformat()},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    body = response.json()
+    assert len(body) == 1
+    assert body[0]["id"] == str(in_range.id)
+
+
+def test_list_bookings_status_filter(client, db_session):
+    salon, token = _salon_and_token(db_session)
+    service, staff = _service_and_staff(db_session, salon)
+    when = datetime.now(timezone.utc) + timedelta(days=1)
+    pending = _booking(salon, service, staff, when)
+    confirmed = _booking(salon, service, staff, when + timedelta(hours=1))
+    confirmed.status = "confirmed"
+    db_session.add_all([pending, confirmed])
+    db_session.commit()
+
+    response = client.get(
+        "/dashboard/bookings",
+        params={"status": "confirmed"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    body = response.json()
+    assert len(body) == 1
+    assert body[0]["id"] == str(confirmed.id)
