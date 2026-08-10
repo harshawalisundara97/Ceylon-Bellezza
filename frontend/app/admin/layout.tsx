@@ -7,6 +7,7 @@ import { getToken, clearToken } from "@/lib/adminAuth";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/services", label: "Services" },
   { href: "/admin/staff", label: "Staff" },
   { href: "/admin/gallery", label: "Gallery" },
