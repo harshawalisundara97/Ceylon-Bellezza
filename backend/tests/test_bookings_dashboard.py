@@ -116,3 +116,36 @@ def test_update_booking_status_wrong_salon_404(client, db_session):
     )
 
     assert response.status_code == 404
+
+
+def test_update_booking_status_rejects_invalid_value(client, db_session):
+    salon, token = _salon_and_token(db_session)
+    service, staff = _service_and_staff(db_session, salon)
+    booking = _booking(salon, service, staff, datetime.now(timezone.utc) + timedelta(days=1))
+    db_session.add(booking)
+    db_session.commit()
+
+    response = client.patch(
+        f"/dashboard/bookings/{booking.id}",
+        json={"status": "made-up-status"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 422
+
+
+def test_update_booking_status_accepts_completed(client, db_session):
+    salon, token = _salon_and_token(db_session)
+    service, staff = _service_and_staff(db_session, salon)
+    booking = _booking(salon, service, staff, datetime.now(timezone.utc) + timedelta(days=1))
+    db_session.add(booking)
+    db_session.commit()
+
+    response = client.patch(
+        f"/dashboard/bookings/{booking.id}",
+        json={"status": "completed"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "completed"
