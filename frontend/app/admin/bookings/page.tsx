@@ -8,6 +8,7 @@ import Dropdown from "@/components/ui/Dropdown";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import DayCalendar from "./DayCalendar";
 
 export interface DashboardBooking {
   id: string;
@@ -128,10 +129,7 @@ export default function BookingsPage() {
       ) : bookings.length === 0 ? (
         <EmptyState title="No bookings for this day" description="Try a different date or status filter." />
       ) : (
-        <p className="mt-6 text-sm text-taupe">
-          {bookings.length} booking{bookings.length === 1 ? "" : "s"} across {staff.length} staff member
-          {staff.length === 1 ? "" : "s"}. Calendar grid coming in the next task.
-        </p>
+        <DayCalendar bookings={bookings} staff={staff} onSelectBooking={() => {}} />
       )}
     </div>
   );
