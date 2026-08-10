@@ -10,6 +10,8 @@ import PageHeading from "@/components/ui/PageHeading";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import Tabs from "@/components/ui/Tabs";
+import StaffAvailabilityEditor from "@/components/admin/StaffAvailabilityEditor";
 
 interface Staff {
   id: string;
@@ -27,6 +29,7 @@ export default function StaffPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("staff");
   const { showToast } = useToast();
 
   async function loadStaff() {
@@ -97,85 +100,100 @@ export default function StaffPage() {
       <PageHeading>Staff</PageHeading>
       {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
-      <Card as="form" onSubmit={handleSubmit} className="mt-6">
-        <p className="font-medium text-ink">{editingId ? "Edit staff member" : "Add staff member"}</p>
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <Input
-            required
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-          <Input
-            placeholder="Photo URL"
-            value={form.photo_url}
-            onChange={(e) => setForm({ ...form, photo_url: e.target.value })}
-          />
-          <Textarea
-            placeholder="Bio"
-            value={form.bio}
-            onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            className="col-span-2"
-          />
-        </div>
-        <div className="mt-4 flex gap-3">
-          <Button type="submit">{editingId ? "Save changes" : "Add staff member"}</Button>
-          {editingId && (
-            <Button type="button" variant="secondary" onClick={cancelEdit}>
-              Cancel
-            </Button>
-          )}
-        </div>
-      </Card>
+      <Tabs
+        tabs={[
+          { key: "staff", label: "Staff" },
+          { key: "hours", label: "Working Hours" },
+        ]}
+        activeKey={activeTab}
+        onChange={setActiveTab}
+      />
 
-      {loading ? (
-        <div className="mt-6 flex flex-col gap-3">
-          <Skeleton className="h-16 rounded-md" />
-          <Skeleton className="h-16 rounded-md" />
-          <Skeleton className="h-16 rounded-md" />
-        </div>
-      ) : staff.length === 0 ? (
-        <EmptyState
-          title="No staff yet"
-          description="Add your first staff member to get started."
-        />
-      ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {staff.map((member) => (
-            <Card key={member.id} className="p-4 text-center">
-              <img
-                src={member.photo_url ?? "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"}
-                alt={member.name}
-                className="mx-auto h-20 w-20 rounded-full border border-hairline object-cover"
+      {activeTab === "staff" && (
+        <>
+          <Card as="form" onSubmit={handleSubmit} className="mt-6">
+            <p className="font-medium text-ink">{editingId ? "Edit staff member" : "Add staff member"}</p>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <Input
+                required
+                placeholder="Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
-              <p className="mt-3 font-medium text-ink">{member.name}</p>
-              <p className="mt-1 text-sm text-taupe">{member.bio}</p>
-              <div className="mt-3 flex justify-center gap-3">
-                {confirmingId === member.id ? (
-                  <>
-                    <span className="text-sm text-ink">Delete?</span>
-                    <Button variant="danger" onClick={() => handleDelete(member.id)}>
-                      Confirm
-                    </Button>
-                    <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => startEdit(member)} className="text-sm text-accent">
-                      Edit
-                    </button>
-                    <Button variant="danger" onClick={() => setConfirmingId(member.id)}>
-                      Delete
-                    </Button>
-                  </>
-                )}
-              </div>
-            </Card>
-          ))}
-        </div>
+              <Input
+                placeholder="Photo URL"
+                value={form.photo_url}
+                onChange={(e) => setForm({ ...form, photo_url: e.target.value })}
+              />
+              <Textarea
+                placeholder="Bio"
+                value={form.bio}
+                onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                className="col-span-2"
+              />
+            </div>
+            <div className="mt-4 flex gap-3">
+              <Button type="submit">{editingId ? "Save changes" : "Add staff member"}</Button>
+              {editingId && (
+                <Button type="button" variant="secondary" onClick={cancelEdit}>
+                  Cancel
+                </Button>
+              )}
+            </div>
+          </Card>
+
+          {loading ? (
+            <div className="mt-6 flex flex-col gap-3">
+              <Skeleton className="h-16 rounded-md" />
+              <Skeleton className="h-16 rounded-md" />
+              <Skeleton className="h-16 rounded-md" />
+            </div>
+          ) : staff.length === 0 ? (
+            <EmptyState
+              title="No staff yet"
+              description="Add your first staff member to get started."
+            />
+          ) : (
+            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {staff.map((member) => (
+                <Card key={member.id} className="p-4 text-center">
+                  <img
+                    src={member.photo_url ?? "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"}
+                    alt={member.name}
+                    className="mx-auto h-20 w-20 rounded-full border border-hairline object-cover"
+                  />
+                  <p className="mt-3 font-medium text-ink">{member.name}</p>
+                  <p className="mt-1 text-sm text-taupe">{member.bio}</p>
+                  <div className="mt-3 flex justify-center gap-3">
+                    {confirmingId === member.id ? (
+                      <>
+                        <span className="text-sm text-ink">Delete?</span>
+                        <Button variant="danger" onClick={() => handleDelete(member.id)}>
+                          Confirm
+                        </Button>
+                        <button onClick={() => setConfirmingId(null)} className="text-sm text-taupe">
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => startEdit(member)} className="text-sm text-accent">
+                          Edit
+                        </button>
+                        <Button variant="danger" onClick={() => setConfirmingId(member.id)}>
+                          Delete
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
       )}
+
+      {activeTab === "hours" && <StaffAvailabilityEditor staff={staff} />}
     </div>
   );
 }
