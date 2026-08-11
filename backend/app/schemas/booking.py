@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from enum import Enum
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -9,6 +10,9 @@ class Gender(str, Enum):
     male = "male"
     female = "female"
     other = "other"
+
+
+BookingStatus = Literal["pending", "confirmed", "completed", "cancelled"]
 
 
 class BookingCreateRequest(BaseModel):
@@ -31,7 +35,7 @@ class BookingRead(BaseModel):
     customer_email: str
     gender: str
     scheduled_at: datetime
-    status: str
+    status: BookingStatus
 
     model_config = {"from_attributes": True}
 
@@ -42,4 +46,4 @@ class DashboardBookingRead(BookingRead):
 
 
 class BookingStatusUpdateRequest(BaseModel):
-    status: str
+    status: BookingStatus
