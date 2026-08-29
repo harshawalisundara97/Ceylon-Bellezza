@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SalonSummary } from "@/lib/types";
@@ -9,20 +8,10 @@ import SearchBarCard from "./SearchBarCard";
 import { staggerContainer } from "@/lib/motion";
 
 export default function SalonDirectory({ initialSalons }: { initialSalons: SalonSummary[] }) {
-  const [query, setQuery] = useState("");
-
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return initialSalons;
-    return initialSalons.filter(
-      (salon) => salon.name.toLowerCase().includes(normalized) || salon.city.toLowerCase().includes(normalized)
-    );
-  }, [initialSalons, query]);
-
   return (
     <div>
       <div className="relative z-10 mx-4 -mt-[26px] sm:mx-11 sm:-mt-[58px]">
-        <SearchBarCard value={query} onChange={setQuery} />
+        <SearchBarCard />
       </div>
 
       <div className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-11">
@@ -46,10 +35,8 @@ export default function SalonDirectory({ initialSalons }: { initialSalons: Salon
           </div>
         </div>
 
-        {filtered.length === 0 ? (
-          <p className="py-16 text-center text-taupe">
-            {initialSalons.length === 0 ? "No salons yet — check back soon." : "No salons match your search."}
-          </p>
+        {initialSalons.length === 0 ? (
+          <p className="py-16 text-center text-taupe">No salons yet — check back soon.</p>
         ) : (
           <motion.div
             initial="hidden"
@@ -57,7 +44,7 @@ export default function SalonDirectory({ initialSalons }: { initialSalons: Salon
             variants={staggerContainer}
             className="mt-6 grid grid-cols-1 gap-[22px] sm:grid-cols-2 lg:grid-cols-4"
           >
-            {filtered.map((salon) => (
+            {initialSalons.map((salon) => (
               <div key={salon.id}>
                 <SalonCard salon={salon} />
               </div>
