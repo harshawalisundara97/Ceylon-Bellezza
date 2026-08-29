@@ -16,8 +16,7 @@ export default function Hero() {
       style={{ backgroundImage: `url('${HERO_IMAGE}')` }}
     >
       <div
-        className="absolute inset-0 sm:[background:linear-gradient(102deg,rgba(14,59,50,.92)_0%,rgba(14,59,50,.72)_44%,rgba(14,59,50,.12)_78%)]"
-        style={{ background: "linear-gradient(180deg, rgba(14,59,50,.55) 0%, rgba(14,59,50,.9) 100%)" }}
+        className="absolute inset-0 [background:linear-gradient(180deg,rgba(14,59,50,.55)_0%,rgba(14,59,50,.9)_100%)] sm:[background:linear-gradient(102deg,rgba(14,59,50,.92)_0%,rgba(14,59,50,.72)_44%,rgba(14,59,50,.12)_78%)]"
       />
       <div className="relative flex h-full max-w-[600px] flex-col justify-end p-6 sm:justify-center sm:p-16">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-champagne">
@@ -26,7 +25,7 @@ export default function Hero() {
         <h1 className="mt-3 font-serif text-4xl font-semibold leading-[1.04] text-white sm:text-[62px]">
           Find your next favourite salon
         </h1>
-        <p className="mt-3 max-w-[470px] text-base text-white/82 sm:text-lg">
+        <p className="mt-3 max-w-[470px] text-base text-white/80 sm:text-lg">
           Curated hair, beauty &amp; grooming across Sri Lanka
         </p>
         <Link

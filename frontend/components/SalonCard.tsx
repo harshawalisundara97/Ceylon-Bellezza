@@ -56,7 +56,7 @@ export default function SalonCard({ salon }: { salon: SalonSummary }) {
             <div>
               <p className="text-[11px] uppercase tracking-wide text-taupe">From</p>
               <p className="text-sm font-semibold text-ink">
-                {salon.starting_price !== null ? formatCurrency(salon.starting_price) : "Price on request"}
+                {salon.starting_price != null ? formatCurrency(salon.starting_price) : "Price on request"}
               </p>
             </div>
           </div>
