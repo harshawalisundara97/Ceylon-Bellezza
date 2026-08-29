@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -18,7 +19,24 @@ router = APIRouter(prefix="/salons", tags=["public"])
 
 @router.get("", response_model=list[PublicSalonSummary])
 def list_active_salons(db: Session = Depends(get_db)):
-    return db.query(Salon).filter(Salon.status == "active").all()
+    price_subquery = (
+        db.query(Service.salon_id, func.min(Service.price).label("starting_price"))
+        .group_by(Service.salon_id)
+        .subquery()
+    )
+    rows = (
+        db.query(Salon, price_subquery.c.starting_price)
+        .outerjoin(price_subquery, Salon.id == price_subquery.c.salon_id)
+        .filter(Salon.status == "active")
+        .all()
+    )
+    return [
+        PublicSalonSummary(
+            **PublicSalonSummary.model_validate(salon).model_dump(exclude={"starting_price"}),
+            starting_price=float(starting_price) if starting_price is not None else None,
+        )
+        for salon, starting_price in rows
+    ]
 
 
 @router.get("/{slug}", response_model=PublicSalonDetail)

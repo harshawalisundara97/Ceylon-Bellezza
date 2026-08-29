@@ -10,6 +10,7 @@ class PublicSalonSummary(BaseModel):
     category: str
     city: str
     template_settings: dict
+    starting_price: float | None = None
 
     model_config = {"from_attributes": True}
 

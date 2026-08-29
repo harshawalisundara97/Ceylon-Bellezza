@@ -3,24 +3,30 @@
 @tailwind utilities;
 
 :root {
-  /* Colors — clean neutral base + teal/mint accent */
-  --color-bg: #ffffff;
-  --color-surface: #f7f8f7;
-  --color-ink: #1f2422;
-  --color-taupe: #6b7570;
-  --color-hairline: #e2e6e4;
-  --color-accent: #0f9b8e;
-  --color-accent-light: #cdeee9;
-  --color-danger: #dc2626;
+  /* Colors — cream/forest/emerald/champagne */
+  --color-bg: #FBF8F3;
+  --color-surface: #F7F3EB;
+  --color-ink: #1E2422;
+  --color-taupe: #6B7570;
+  --color-hairline: #EFE9DE;
+  --color-accent: #0E3B32;
+  --color-accent-light: #E8F0ED;
+  --color-danger: #A6412F;
+  --color-success: #2F7D5F;
+  --color-champagne: #C9A34E;
+  --color-champagne-light: #F3E9D2;
+  --color-charcoal: #1E2422;
 
   /* Spacing/radii/shadows */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  --radius-pill: 999px;
+  --shadow-sm: 0 4px 14px rgba(30, 36, 34, 0.07);
+  --shadow-md: 0 14px 34px rgba(30, 36, 34, 0.13);
+  --shadow-lg: 0 22px 60px rgba(30, 36, 34, 0.16);
+  --shadow-floating: 0 16px 44px rgba(30, 36, 34, 0.12);
 }
 
 @keyframes fadeIn {

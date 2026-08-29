@@ -5,6 +5,7 @@ export interface SalonSummary {
   category: string;
   city: string;
   template_settings: Record<string, unknown>;
+  starting_price: number | null;
 }
 
 export interface Service {

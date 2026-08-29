@@ -64,3 +64,30 @@ def test_get_salon_by_slug_404_for_suspended_salon(client, db_session):
 
     response = client.get(f"/salons/{salon.slug}")
     assert response.status_code == 404
+
+
+def test_list_active_salons_includes_starting_price(client, db_session):
+    salon = Salon(slug="price-salon", name="Price Salon", category="unisex", address="Addr", city="Colombo", status="active")
+    db_session.add(salon)
+    db_session.commit()
+    db_session.add(Service(salon_id=salon.id, name="Haircut", category="hair", price=2500.0, duration_minutes=30))
+    db_session.add(Service(salon_id=salon.id, name="Colour", category="hair", price=6500.0, duration_minutes=90))
+    db_session.commit()
+
+    response = client.get("/salons")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body[0]["starting_price"] == 2500.0
+
+
+def test_list_active_salons_starting_price_null_with_no_services(client, db_session):
+    salon = Salon(slug="no-services", name="No Services", category="unisex", address="Addr", city="Colombo", status="active")
+    db_session.add(salon)
+    db_session.commit()
+
+    response = client.get("/salons")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body[0]["starting_price"] is None
