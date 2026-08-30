@@ -37,6 +37,8 @@ export interface SalonDetail {
   category: string;
   city: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
   template_settings: Record<string, unknown>;
   services: Service[];
   staff: Staff[];
