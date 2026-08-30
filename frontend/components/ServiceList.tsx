@@ -1,4 +1,5 @@
 import { Service } from "@/lib/types";
+import { formatCurrency } from "@/lib/format";
 
 function groupByCategory(services: Service[]): Record<string, Service[]> {
   return services.reduce<Record<string, Service[]>>((groups, service) => {
@@ -11,21 +12,19 @@ export default function ServiceList({ services }: { services: Service[] }) {
   const grouped = groupByCategory(services);
 
   return (
-    <section className="bg-white px-6 py-12">
-      <h2 className="font-serif text-2xl text-ink">Services</h2>
+    <section className="py-8">
+      <h2 className="font-serif text-2xl font-semibold text-ink">Services</h2>
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category} className="mt-8">
-          <h3 className="border-b border-accent/30 pb-2 font-serif text-sm uppercase tracking-widest text-accent">
-            {category}
-          </h3>
-          <ul className="mt-3 divide-y divide-hairline">
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-accent">{category}</h3>
+          <ul className="mt-3 divide-y divide-hairline rounded-xl border border-hairline bg-white">
             {items.map((service) => (
-              <li key={service.id} className="flex items-center justify-between py-3">
+              <li key={service.id} className="flex items-center justify-between px-5 py-4">
                 <div>
                   <p className="font-medium text-ink">{service.name}</p>
                   <p className="text-sm text-taupe">{service.duration_minutes} min</p>
                 </div>
-                <p className="font-serif font-semibold text-accent">Rs. {service.price.toLocaleString()}</p>
+                <p className="font-semibold text-ink">{formatCurrency(service.price)}</p>
               </li>
             ))}
           </ul>
