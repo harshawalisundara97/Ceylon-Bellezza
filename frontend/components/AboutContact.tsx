@@ -4,17 +4,17 @@ export default function AboutContact({ content }: { content: Record<string, stri
   }
 
   return (
-    <section className="bg-bg px-6 py-12">
-      <div className="grid gap-8 md:grid-cols-2">
+    <section className="py-8">
+      <div className="grid gap-6 md:grid-cols-2">
         {content.about_us && (
-          <div>
-            <h2 className="font-serif text-2xl text-ink">About Us</h2>
+          <div className="rounded-xl border border-hairline bg-white p-6">
+            <h2 className="font-serif text-xl font-semibold text-ink">About</h2>
             <p className="mt-3 text-taupe">{content.about_us}</p>
           </div>
         )}
         {content.contact_info && (
-          <div>
-            <h2 className="font-serif text-2xl text-ink">Contact</h2>
+          <div className="rounded-xl border border-hairline bg-white p-6">
+            <h2 className="font-serif text-xl font-semibold text-ink">Contact</h2>
             <p className="mt-3 text-taupe">{content.contact_info}</p>
           </div>
         )}
