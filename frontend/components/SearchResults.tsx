@@ -19,7 +19,12 @@ export default function SearchResults() {
   const [priceRange, setPriceRange] = useState<{ min: number; max: number } | null>(null);
 
   useEffect(() => {
-    getSalons().then(setSalons);
+    getSalons()
+      .then(setSalons)
+      .catch((error) => {
+        console.error("Failed to load salons", error);
+        setSalons([]);
+      });
   }, []);
 
   const priceBounds = useMemo(() => {

@@ -18,7 +18,7 @@ export default function SalonHero({ salon }: { salon: SalonDetail }) {
   const extraPhotoCount = Math.max(0, salon.gallery.length - 5);
 
   return (
-    <section className="px-6 pt-8 sm:px-11">
+    <section className="mx-auto max-w-6xl px-6 pt-8 sm:px-11">
       {galleryPhotos.length > 0 ? (
         <div className="grid h-[312px] grid-cols-[2fr_1fr_1fr] grid-rows-2 gap-3 overflow-hidden rounded-xl">
           {galleryPhotos.map((photo, index) => {
@@ -29,7 +29,7 @@ export default function SalonHero({ salon }: { salon: SalonDetail }) {
                 <img src={photo.image_url} alt={photo.caption || salon.name} className="h-full w-full object-cover" />
                 {isLast && (
                   <div className="absolute inset-0 flex items-center justify-center bg-[rgba(14,59,50,0.5)]">
-                    <span className="text-lg font-semibold text-white">+{extraPhotoCount} photos</span>
+                    <span className="text-lg font-semibold text-white">+{extraPhotoCount === 1 ? "1 photo" : `${extraPhotoCount} photos`}</span>
                   </div>
                 )}
               </div>
