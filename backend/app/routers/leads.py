@@ -61,7 +61,10 @@ def approve_lead(lead_id: uuid.UUID, payload: LeadApproveRequest, db: Session = 
 
     latitude, longitude = payload.latitude, payload.longitude
     if latitude is None or longitude is None:
-        geocoded = geocode_address(payload.address, payload.city)
+        try:
+            geocoded = geocode_address(payload.address, payload.city)
+        except Exception:
+            geocoded = None
         if geocoded is not None:
             latitude, longitude = geocoded
 
