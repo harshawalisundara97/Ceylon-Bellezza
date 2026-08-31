@@ -14,3 +14,4 @@ httpx==0.27.2
 resend==2.5.1
 sqladmin==0.16.1  # pinned: newer versions require starlette>=0.39, which conflicts with fastapi==0.115.0's starlette<0.39 pin
 itsdangerous==2.2.0
+anthropic==1.2.0

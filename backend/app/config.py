@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     google_maps_api_key: str = ""
     resend_api_key: str = ""
+    anthropic_api_key: str = ""
     frontend_url: str = "http://localhost:3000"
 
     model_config = SettingsConfigDict(env_file=".env")
