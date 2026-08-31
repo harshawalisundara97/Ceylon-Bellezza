@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
+import ChatWidget from "@/components/ChatWidget";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -25,7 +26,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
-      <body className="min-h-screen bg-bg font-sans text-ink"><ToastProvider>{children}</ToastProvider></body>
+      <body className="min-h-screen bg-bg font-sans text-ink">
+        <ToastProvider>
+          {children}
+          <ChatWidget />
+        </ToastProvider>
+      </body>
     </html>
   );
 }
