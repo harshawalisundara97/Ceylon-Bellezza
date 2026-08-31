@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -15,6 +16,11 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/platform")) {
+    return null;
+  }
 
   async function handleSend(event: React.FormEvent) {
     event.preventDefault();
@@ -34,7 +40,7 @@ export default function ChatWidget() {
       });
       const body = await response.json().catch(() => null);
       if (!response.ok) {
-        const detail = body?.detail ?? "Sorry, something went wrong — try again.";
+        const detail = typeof body?.detail === "string" ? body.detail : "Sorry, something went wrong — try again.";
         setMessages((prev) => [...prev, { role: "assistant", content: detail }]);
         return;
       }
