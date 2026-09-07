@@ -12,7 +12,7 @@ const EMPTY_FORM = {
   customer_name: "",
   customer_phone: "",
   customer_email: "",
-  gender: "" as "" | "male" | "female" | "other",
+  gender: "" as "" | "male" | "female" | "other" | "child",
 };
 
 const FIELD_CLASS = "rounded border border-hairline px-3 py-2 focus:border-accent focus:outline-none";
@@ -36,7 +36,7 @@ export default function BookingForm({ salon }: { salon: SalonDetail }) {
         customer_name: form.customer_name,
         customer_phone: form.customer_phone,
         customer_email: form.customer_email,
-        gender: form.gender as "male" | "female" | "other",
+        gender: form.gender as "male" | "female" | "other" | "child",
       });
       setSuccess(true);
       setForm(EMPTY_FORM);
@@ -132,6 +132,7 @@ export default function BookingForm({ salon }: { salon: SalonDetail }) {
             <option value="">Select gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
+            <option value="child">Child</option>
             <option value="other">Other</option>
           </select>
         </div>

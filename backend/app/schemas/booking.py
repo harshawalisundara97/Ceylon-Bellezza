@@ -10,6 +10,7 @@ class Gender(str, Enum):
     male = "male"
     female = "female"
     other = "other"
+    child = "child"
 
 
 BookingStatus = Literal["pending", "confirmed", "completed", "cancelled"]

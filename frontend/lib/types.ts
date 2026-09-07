@@ -51,7 +51,7 @@ export interface BookingCreatePayload {
   customer_name: string;
   customer_phone: string;
   customer_email: string;
-  gender: "male" | "female" | "other";
+  gender: "male" | "female" | "other" | "child";
 }
 
 export interface Booking {
