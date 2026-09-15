@@ -50,6 +50,46 @@ def test_get_salon_by_slug_returns_full_payload(client, db_session):
     assert body["content"] == {"about_us": "We are great"}
 
 
+def test_get_salon_by_slug_includes_coordinates_when_set(client, db_session):
+    salon = Salon(
+        slug="geocoded-salon",
+        name="Geocoded Salon",
+        category="unisex",
+        address="1 Main St",
+        city="Colombo",
+        status="active",
+        latitude=6.9271,
+        longitude=79.8612,
+    )
+    db_session.add(salon)
+    db_session.commit()
+
+    response = client.get(f"/salons/{salon.slug}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["latitude"] == 6.9271
+    assert body["longitude"] == 79.8612
+
+
+def test_get_salon_by_slug_coordinates_null_when_not_geocoded(client, db_session):
+    salon = Salon(
+        slug="ungeocoded-salon",
+        name="Ungeocoded Salon",
+        category="unisex",
+        address="2 Main St",
+        city="Kandy",
+        status="active",
+    )
+    db_session.add(salon)
+    db_session.commit()
+
+    response = client.get(f"/salons/{salon.slug}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["latitude"] is None
+    assert body["longitude"] is None
+
+
 def test_get_salon_by_slug_404_for_unknown_slug(client, db_session):
     response = client.get("/salons/does-not-exist")
     assert response.status_code == 404

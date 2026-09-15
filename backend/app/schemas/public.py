@@ -50,6 +50,8 @@ class PublicSalonDetail(BaseModel):
     category: str
     city: str
     address: str
+    latitude: float | None = None
+    longitude: float | None = None
     template_settings: dict
     services: list[PublicServiceRead]
     staff: list[PublicStaffRead]

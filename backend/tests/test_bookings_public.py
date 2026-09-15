@@ -80,3 +80,14 @@ def test_create_booking_invalid_gender(client, db_session):
     response = client.post(f"/salons/{salon.slug}/bookings", json=payload)
 
     assert response.status_code == 422
+
+
+def test_create_booking_accepts_child_gender(client, db_session):
+    salon, service = _salon_with_service(db_session)
+    payload = _valid_payload(service.id)
+    payload["gender"] = "child"
+
+    response = client.post(f"/salons/{salon.slug}/bookings", json=payload)
+
+    assert response.status_code == 201
+    assert response.json()["gender"] == "child"
